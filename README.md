@@ -22,7 +22,7 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 ### Phase 1: The Foundations (Days 1 - 14)
 *Goal: Master the environment, the command line, and how data moves.*
 - [x] **Day 1:** Environment Setup (Zorin OS, Python, Rust, Docker)
-- [ ] **Day 2:** [Linux Power User & Docker Lab Setup](./Phase-01/Day-02/README.md)
+- [x] **Day 2:** [Linux Power User & Docker Lab Setup](./Phase-01/Day-02/README.md)
 - [ ] **Day 3:** Networking Fundamentals I
 - ... (See [TIMETABLE.md](./TIMETABLE.md) for full details)
 
