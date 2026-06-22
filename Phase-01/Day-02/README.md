@@ -1,5 +1,6 @@
 # Day 2: Linux Power User & Docker Lab Setup
 
+Welcome to Day 2! Today, we are moving from basic OS usage to "Power User" status and setting up your persistent hacking laboratory using Docker. This saves RAM while giving you the full power of Kali and Parrot OS.
 Welcome to Day 2! Today, we are moving from basic OS usage to "Power User" status and setting up a persistent hacking laboratory using Docker. This saves RAM while giving you the full power of Kali and Parrot OS.
 
 ## 1. What You Need to Know: Linux Power User
