@@ -5,6 +5,8 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 ## 🚀 Progress Tracking
 **Current Status:** Phase 1 - Day 3
 **Completion:** 2/72 Days (2.8%)
+**Current Status:** Phase 1 - Day 2
+**Completion:** 1/72 Days (1.4%)
 
 | Phase | Description | Status |
 |-------|-------------|--------|
@@ -103,6 +105,8 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 - [ ] **Day 70:** White Hat Defense
 - [ ] **Day 71:** Report Writing & Remediation Strategy
 - [ ] **Day 72:** Final Review and Graduation
+- [ ] **Day 3:** Networking Fundamentals I
+- ... (See [TIMETABLE.md](./TIMETABLE.md) for full details)
 
 ---
 
