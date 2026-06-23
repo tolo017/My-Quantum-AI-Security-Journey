@@ -3,8 +3,8 @@
 Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the intersection of Generative AI and Quantum Computing.
 
 ## 🚀 Progress Tracking
-**Current Status:** Phase 1 - Day 4
-**Completion:** 3/72 Days (4.2%)
+**Current Status:** Phase 1 - Day 5
+**Completion:** 4/72 Days (5.6%)
 
 | Phase | Description | Status |
 |-------|-------------|--------|
@@ -24,7 +24,7 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 - [x] **Day 1:** Environment Setup (Zorin OS, Python, Rust, Docker)
 - [x] **Day 2:** [Linux Power User & Docker Lab Setup](./Phase-01/Day-02/README.md)
 - [x] **Day 3:** [Networking Fundamentals I](./Phase-01/Day-03/README.md)
-- [ ] **Day 4:** [Networking Fundamentals II](./Phase-01/Day-04/README.md)
+- [x] **Day 4:** [Networking Fundamentals II](./Phase-01/Day-04/README.md)
 - [ ] **Day 5:** Introduction to Virtualization and Lab Isolation
 - [ ] **Day 6:** Basic Cryptography
 - [ ] **Day 7:** Hashing, Digital Signatures, and PKI
