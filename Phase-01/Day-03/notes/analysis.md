@@ -7,7 +7,7 @@ When running `traceroute`, the stars represent a "Request Timed Out". This happe
 3. **Packet Loss:** Actual network congestion.
 
 ## Target Comparisons
-- **Google.com:**
+### **Google.com:**
    `traceroute google.com`
 traceroute to google.com (142.251.47.46), 30 hops max, 60 byte packets
 - 1  dev.opt (192.168.100.1)  17.111 ms  21.463 ms  28.437 ms
@@ -18,7 +18,7 @@ traceroute to google.com (142.251.47.46), 30 hops max, 60 byte packets
 - 6  10.70.86.77 (10.70.86.77)  74.362 ms  19.763 ms  21.886 ms
 - 7  196.201.221.91 (196.201.221.91)  18.882 ms  20.258 ms
 
-- **Microsoft.com:**
+### **Microsoft.com:**
    `traceroute microsoft.com`
 traceroute to microsoft.com (150.171.109.1), 30 hops max, 60 byte packets
 - 1  dev.opt (192.168.100.1)  9.076 ms  10.719 ms  12.406 ms
@@ -29,6 +29,6 @@ traceroute to microsoft.com (150.171.109.1), 30 hops max, 60 byte packets
 - 6  10.70.55.41 (10.70.55.41)  28.683 ms 10.70.86.77 (10.70.86.77)  21.624 ms
 
 
-- **Internal Gateway:**
+### **Internal Gateway:**
    `ip a`
 - 192.168.100.1
