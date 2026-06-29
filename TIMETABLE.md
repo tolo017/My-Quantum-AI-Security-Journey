@@ -14,7 +14,7 @@ This curriculum is designed to take you from zero knowledge to a professional pr
 - [x] **Day 2:** [Linux Power User (Bash, Filesystems, Permissions)](./Phase-01/Day-02/README.md)
 - [x] **Day 3:** [Networking Fundamentals I (OSI Model, TCP/IP, DNS)](./Phase-01/Day-03/README.md)
 - [x] **Day 4:** [Networking Fundamentals II (HTTP/S, SSH, Wireshark)](./Phase-01/Day-04/README.md)
-- [ ] **Day 5:** Introduction to Virtualization and Lab Isolation
+- [ ] **Day 5:** [Introduction to Virtualization and Lab Isolation](./Phase-01/Day-05/README.md)
 - [ ] **Day 6:** Basic Cryptography (Symmetric vs. Asymmetric)
 - [ ] **Day 7:** Hashing, Digital Signatures, and PKI
 - [ ] **Day 8:** The Hacker's Methodology (Recon, Scan, Exploit, Post)

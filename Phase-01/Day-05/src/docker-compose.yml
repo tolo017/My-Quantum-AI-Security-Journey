@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  kali:
+    image: kalilinux/kali-rolling
+    container_name: kali-compose
+    networks:
+      - hacking-lab
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    tty: true
+    stdin_open: true
+
+  parrot:
+    image: parrotsec/core
+    container_name: parrot-compose
+    networks:
+      - hacking-lab
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    tty: true
+    stdin_open: true
+
+networks:
+  hacking-lab:
+    driver: bridge
