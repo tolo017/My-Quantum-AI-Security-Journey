@@ -5,10 +5,10 @@
 - **Protocol:** Telnet (Unencrypted)
 
 ## Findings
-- **Username Found:** [Enter here]
-- **Password Found:** [Enter here]
-- **Commands Executed:** [List any commands you see the user typed]
+- **Username Found:** fake
+- **Password Found:** user
+- **Commands Executed:** ls, ls -a
 
 ## Reflection
 Why is Telnet no longer used in modern secure environments?
-- [Your answer here]
+- Telnet is as unsecure as http. It exposes user inputs and credentials. Telnet is unencrypted.
