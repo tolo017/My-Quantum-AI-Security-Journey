@@ -9,8 +9,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: '0.5'
+          memory: 2G
+          cpus: '1.5'
     tty: true
     stdin_open: true
 
@@ -22,8 +22,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: '0.5'
+          memory: 2G
+          cpus: '1.5'
     tty: true
     stdin_open: true
 
