@@ -7,3 +7,11 @@
 | **Speed** | Fast | Slow | Near Native |
 | **Isolation** | Strongest | Strong | Process-level |
 | **Best For** | Servers/Cloud | Desktop Testing | Microservices/Labs |
+
+### Lab Reflection
+*Which virtualization type do you think is best for your current 8GB RAM setup, and why?*
+> [Your Answer Here]
+
+### Screenshot: Docker Stats
+*(Upload your screenshot of `docker stats` showing the 1GB memory limits here)*
+![Docker Stats Placeholder]()
