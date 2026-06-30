@@ -15,7 +15,7 @@ This curriculum is designed to take you from zero knowledge to a professional pr
 - [x] **Day 3:** [Networking Fundamentals I (OSI Model, TCP/IP, DNS)](./Phase-01/Day-03/README.md)
 - [x] **Day 4:** [Networking Fundamentals II (HTTP/S, SSH, Wireshark)](./Phase-01/Day-04/README.md)
 - [x] **Day 5:** [Introduction to Virtualization and Lab Isolation](./Phase-01/Day-05/README.md)
-- [ ] **Day 6:** Basic Cryptography (Symmetric vs. Asymmetric)
+- [ ] **Day 6:** [Basic Cryptography (Symmetric vs. Asymmetric)](./Phase-01/Day-06/README.md)
 - [ ] **Day 7:** Hashing, Digital Signatures, and PKI
 - [ ] **Day 8:** The Hacker's Methodology (Recon, Scan, Exploit, Post)
 - [ ] **Day 9:** Web Vulnerabilities (OWASP Top 10) - Part I
