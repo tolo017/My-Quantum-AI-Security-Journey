@@ -26,7 +26,7 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 - [x] **Day 3:** [Networking Fundamentals I](./Phase-01/Day-03/README.md)
 - [x] **Day 4:** [Networking Fundamentals II](./Phase-01/Day-04/README.md)
 - [x] **Day 5:** [Introduction to Virtualization and Lab Isolation](./Phase-01/Day-05/README.md)
-- [ ] **Day 6:** [Basic Cryptography](./Phase-01/Day-06/README.md)
+- [x] **Day 6:** [Basic Cryptography](./Phase-01/Day-06/README.md)
 - [ ] **Day 7:** Hashing, Digital Signatures, and PKI
 - [ ] **Day 8:** The Hacker's Methodology
 - [ ] **Day 9:** Web Vulnerabilities (OWASP Top 10) - Part I
