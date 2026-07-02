@@ -3,8 +3,8 @@
 Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the intersection of Generative AI and Quantum Computing.
 
 ## 🚀 Progress Tracking
-**Current Status:** Phase 1 - Day 7
-**Completion:** 6/72 Days (8.3%)
+**Current Status:** Phase 1 - Day 6
+**Completion:** 5/72 Days (6.9%)
 
 | Phase | Description | Status |
 |-------|-------------|--------|
