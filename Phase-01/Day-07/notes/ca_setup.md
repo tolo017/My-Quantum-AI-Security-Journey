@@ -7,13 +7,12 @@
 ## Signing a Certificate
 1. **The Request (CSR):** parrot.csr
 2. **The Signature Command:**
-> [Paste the command you used here]
+> `openssl x509 -req -in parrot.csr -CA MyRootCA.pem -CAkey MyRootCA.key -CAcreateserial -out parrot.crt -days 500 -sha256`
 
 ## Reflection
 Why is it dangerous if someone steals your `MyRootCA.key`?
-> [Your Answer Here]
+> `It grants them complete control over your trusted network. It creates unrestricted impersonation, malicious code signing, Man-in-the-Middle attacks, and total loss of trust.`
 
 ---
 ### Screenshot: The Final parrot.crt
 *(Upload screenshot showing the details of your newly created certificate)*
-![parrot.crt Placeholder]()
