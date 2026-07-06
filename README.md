@@ -3,8 +3,13 @@
 Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the intersection of Generative AI and Quantum Computing.
 
 ## 🚀 Progress Tracking
+<<<<<<< roadmap-init-day-2-15693630423279156741
 **Current Status:** Phase 1 - Day 8
 **Completion:** 7/72 Days (9.7%)
+=======
+**Current Status:** Phase 1 - Day 6
+**Completion:** 5/72 Days (6.9%)
+>>>>>>> main
 
 | Phase | Description | Status |
 |-------|-------------|--------|
@@ -27,7 +32,11 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 - [x] **Day 4:** [Networking Fundamentals II](./Phase-01/Day-04/README.md)
 - [x] **Day 5:** [Introduction to Virtualization and Lab Isolation](./Phase-01/Day-05/README.md)
 - [x] **Day 6:** [Basic Cryptography](./Phase-01/Day-06/README.md)
+<<<<<<< roadmap-init-day-2-15693630423279156741
 - [x] **Day 7:** [Hashing, Digital Signatures, and PKI](./Phase-01/Day-07/README.md)
+=======
+- [ ] **Day 7:** Hashing, Digital Signatures, and PKI
+>>>>>>> main
 - [ ] **Day 8:** The Hacker's Methodology
 - [ ] **Day 9:** Web Vulnerabilities (OWASP Top 10) - Part I
 - [ ] **Day 10:** Web Vulnerabilities (OWASP Top 10) - Part II

@@ -16,7 +16,11 @@ This curriculum is designed to take you from zero knowledge to a professional pr
 - [x] **Day 4:** [Networking Fundamentals II (HTTP/S, SSH, Wireshark)](./Phase-01/Day-04/README.md)
 - [x] **Day 5:** [Introduction to Virtualization and Lab Isolation](./Phase-01/Day-05/README.md)
 - [x] **Day 6:** [Basic Cryptography (Symmetric vs. Asymmetric)](./Phase-01/Day-06/README.md)
+<<<<<<< roadmap-init-day-2-15693630423279156741
 - [x] **Day 7:** [Hashing, Digital Signatures, and PKI](./Phase-01/Day-07/README.md)
+=======
+- [ ] **Day 7:** Hashing, Digital Signatures, and PKI
+>>>>>>> main
 - [ ] **Day 8:** The Hacker's Methodology (Recon, Scan, Exploit, Post)
 - [ ] **Day 9:** Web Vulnerabilities (OWASP Top 10) - Part I
 - [ ] **Day 10:** Web Vulnerabilities (OWASP Top 10) - Part II
