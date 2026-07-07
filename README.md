@@ -15,7 +15,6 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 | Phase 5 | Hybrid Attacks & Advanced Defense | ⚪ Not Started |
 | Phase 6 | Final Capstone Project | ⚪ Not Started |
 
----
 
 ## 📅 Detailed Roadmap
 
