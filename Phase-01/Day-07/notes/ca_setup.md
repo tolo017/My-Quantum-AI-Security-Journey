@@ -7,6 +7,7 @@
 ## Signing a Certificate
 1. **The Request (CSR):** parrot.csr
 2. **The Signature Command:**
+
 > `openssl x509 -req -in parrot.csr -CA MyRootCA.pem -CAkey MyRootCA.key -CAcreateserial -out parrot.crt -days 500 -sha256`
 
 ## Reflection

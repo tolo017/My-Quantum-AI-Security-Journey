@@ -5,6 +5,7 @@ Hashing ensures **Integrity**. If a file changes, the hash changes.
 
 ## The Signature Failure
 - **What happened when you modified the signed file?**
+
 > `It caused the signature to fail. There was a hash mismatch.`
 
 ## Vulnerable Hashes
