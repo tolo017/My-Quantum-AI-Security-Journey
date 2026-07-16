@@ -2,7 +2,6 @@
 
 ## Certificate Inspection
 
-=======
 1. **Issuer:** `Sectigo`
 2. **Key Exchange Algorithm:** `Elliptic Curve Public Key`
 3. **Symmetric Encryption Used:** `SHA-256`

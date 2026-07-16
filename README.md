@@ -3,8 +3,8 @@
 Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the intersection of Generative AI and Quantum Computing.
 
 ## 🚀 Progress Tracking
-**Current Status:** Phase 1 - Day 9
-**Completion:** 8/72 Days (11.1%)
+**Current Status:** Phase 1 - Day 10
+**Completion:** 9/72 Days (12.5%)
 
 | Phase | Description | Status |
 |-------|-------------|--------|
@@ -15,6 +15,7 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 | Phase 5 | Hybrid Attacks & Advanced Defense | ⚪ Not Started |
 | Phase 6 | Final Capstone Project | ⚪ Not Started |
 
+---
 
 ## 📅 Detailed Roadmap
 
@@ -28,7 +29,7 @@ Welcome to my 72-day intensive roadmap to mastering Cybersecurity at the interse
 - [x] **Day 6:** [Basic Cryptography](./Phase-01/Day-06/README.md)
 - [x] **Day 7:** [Hashing, Digital Signatures, and PKI](./Phase-01/Day-07/README.md)
 - [x] **Day 8:** [The Hacker's Methodology](./Phase-01/Day-08/README.md)
-- [ ] **Day 9:** Web Vulnerabilities (OWASP Top 10) - Part I
+- [x] **Day 9:** [Web Vulnerabilities (OWASP Top 10) - Part I](./Phase-01/Day-09/README.md)
 - [ ] **Day 10:** Web Vulnerabilities (OWASP Top 10) - Part II
 - [ ] **Day 11:** Introduction to Python for Automation
 - [ ] **Day 12:** Introduction to Rust for Systems Security

@@ -18,7 +18,7 @@ This curriculum is designed to take you from zero knowledge to a professional pr
 - [x] **Day 6:** [Basic Cryptography (Symmetric vs. Asymmetric)](./Phase-01/Day-06/README.md)
 - [x] **Day 7:** [Hashing, Digital Signatures, and PKI](./Phase-01/Day-07/README.md)
 - [x] **Day 8:** [The Hacker's Methodology (Recon, Scan, Exploit, Post)](./Phase-01/Day-08/README.md)
-- [ ] **Day 9:** Web Vulnerabilities (OWASP Top 10) - Part I
+- [x] **Day 9:** [Web Vulnerabilities (OWASP Top 10) - Part I](./Phase-01/Day-09/README.md)
 - [ ] **Day 10:** Web Vulnerabilities (OWASP Top 10) - Part II
 - [ ] **Day 11:** Introduction to Python for Automation
 - [ ] **Day 12:** Introduction to Rust for Systems Security
