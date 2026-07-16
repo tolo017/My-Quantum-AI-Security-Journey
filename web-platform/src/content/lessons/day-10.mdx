@@ -1,0 +1,45 @@
+---
+title: "Web Vulnerabilities II"
+day: 10
+phase: 1
+topic: "IDOR, File Inclusion, CSRF"
+difficulty: "Intermediate"
+---
+
+# Day 10: Web Vulnerabilities II
+
+Today we move beyond basic injections and look at how logic and access control break.
+
+## 1. IDOR (Insecure Direct Object Reference)
+- **Concept:** Changing a number in a URL to see someone else's data.
+- **Example:** You log in and see `shop.com/profile?id=100`. You change it to `id=101`. If you see *another* user's profile, that is **IDOR**.
+
+## 2. LFI/RFI (Local/Remote File Inclusion)
+- **Concept:** Tricking the website into showing you files from the server's own disk.
+- **Example:** `site.com/view?page=contact.php`. You change it to `page=/etc/passwd`.
+
+## 3. CSRF (Cross-Site Request Forgery)
+- **Concept:** Tricking a logged-in user into clicking a link that performs an action (like changing their password) without them knowing.
+
+---
+
+### Interactive Challenge 1: The IDOR Scout
+A hacker sees this URL: `https://bank.com/api/v1/transfer/9928`.
+What would they change `9928` to if they wanted to test for IDOR?
+
+<Challenge
+  id="day-10-idor"
+  type="input"
+  correctAnswer="9929"
+  placeholder="Enter a test ID..."
+/>
+
+### Interactive Challenge 2: The File Hunter
+To read the secret Linux user list via an LFI vulnerability, which file path is most commonly targeted?
+
+<Challenge
+  id="day-10-lfi"
+  type="input"
+  correctAnswer="/etc/passwd"
+  placeholder="/path/to/file"
+/>
