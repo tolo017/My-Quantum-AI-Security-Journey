@@ -1,0 +1,28 @@
+---
+title: "Linux Power User & Docker Setup"
+day: 2
+phase: 1
+topic: "Bash, Filesystems, Permissions"
+difficulty: "Beginner"
+---
+
+# Day 2: Linux Power User & Docker Lab Setup
+
+To be effective in cybersecurity, the terminal must be your home. You don't just "use" the filesystem; you manipulate it.
+
+## Key Concepts
+- **The Filesystem Hierarchy:** Everything is a file. `/etc` for config, `/var/log` for evidence, `/tmp` for volatile scripts.
+- **Permissions (The Octal Way):** `chmod 755` (rwxr-xr-x) vs `chmod 600` (rw-------). Security starts with the principle of least privilege.
+- **Piping & Redirection:** `grep`, `awk`, `sed`, and `find`. Chaining commands is where the real power lies.
+
+---
+
+### Challenge: Permission Lockdown
+What octal value command is used to set permissions of a "secret" file so that **only the owner** can read and write to it (and no one else can do anything)?
+
+<Challenge
+  id="day-2-chmod"
+  type="input"
+  correctAnswer="chmod 600"
+  placeholder="Enter chmod command..."
+/>

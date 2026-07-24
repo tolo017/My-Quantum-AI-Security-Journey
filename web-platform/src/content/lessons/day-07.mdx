@@ -1,0 +1,28 @@
+---
+title: "Hashing & PKI"
+day: 7
+phase: 1
+topic: "Integrity, Signatures, PKI"
+difficulty: "Beginner"
+---
+
+# Day 7: Hashing, Digital Signatures, & PKI
+
+Yesterday we learned how to hide data. Today, we learn how to prove data hasn't been changed (**Integrity**) and prove who it came from (**Authenticity**).
+
+## Key Concepts
+- **Hashing (The "Digital Fingerprint"):** A one-way function. You can turn a file into a hash, but you can't turn a hash back into the file.
+- **Digital Signatures (The "Seal of Trust"):** Combines Hashing and Asymmetric encryption to verify identity and message content.
+- **PKI (Public Key Infrastructure):** The system of Certificate Authorities (CAs) that allows everyone on the internet to securely trust public keys.
+
+---
+
+### Challenge: Hashing Algorithm
+What is the standard 256-bit secure cryptographic hashing algorithm widely used for integrity checks today?
+
+<Challenge
+  id="day-7-hash"
+  type="input"
+  correctAnswer="sha-256"
+  placeholder="e.g., md5"
+/>
