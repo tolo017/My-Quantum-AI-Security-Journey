@@ -22,36 +22,36 @@ export default function Challenge({ id, correctAnswer, placeholder }: ChallengeP
   };
 
   return (
-    <div className="my-8 p-6 cyber-border bg-black/60 space-y-4">
-      <div className="flex items-center gap-2 text-cyber-green font-bold uppercase tracking-tighter">
-        <ShieldAlert className="w-5 h-5" />
+    <div className="my-6 p-6 rounded-xl border border-slate-800 bg-[#0C1220] space-y-4 shadow-sm">
+      <div className="flex items-center gap-2.5 text-indigo-400 font-bold uppercase text-xs tracking-wider">
+        <ShieldAlert className="w-4 h-4 text-indigo-400" />
         <span>Action Required: Knowledge Verification</span>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder || "Type answer..."}
-          className="flex-1 bg-cyber-dark border border-cyber-green/30 p-2 text-cyber-green outline-none focus:border-cyber-green"
+          className="flex-1 bg-[#070B13] border border-slate-800 rounded-md p-3 text-slate-200 outline-none focus:border-indigo-500 font-medium text-sm transition-all"
         />
         <button
           onClick={verify}
-          className="neon-button whitespace-nowrap"
+          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm px-6 py-3 rounded-md transition-all whitespace-nowrap shadow-sm shadow-indigo-600/10"
         >
-          EXECUTE
+          Verify Answer
         </button>
       </div>
 
       {status === "success" && (
-        <div className="flex items-center gap-2 text-cyber-green text-sm animate-pulse">
+        <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
           <Check className="w-4 h-4" />
           <span>Access Granted. Challenge completed.</span>
         </div>
       )}
 
       {status === "error" && (
-        <div className="flex items-center gap-2 text-red-500 text-sm">
+        <div className="flex items-center gap-2 text-rose-500 text-xs font-semibold">
           <X className="w-4 h-4" />
           <span>Unauthorized. Try again.</span>
         </div>
