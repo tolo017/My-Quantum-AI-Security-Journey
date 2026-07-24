@@ -1,10 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import Challenge from '@/components/Challenge';
 import LessonActions from '@/components/LessonActions';
 import Link from 'next/link';
 import { Lock, Terminal } from 'lucide-react';
+
+const components = {
+  Challenge,
+};
 
 export async function generateStaticParams() {
   try {
@@ -92,8 +97,8 @@ export default async function LessonPage({ params }: { params: Promise<{ day: st
           </div>
         </header>
 
-        <article className="max-w-none text-sm leading-relaxed opacity-90 border-b border-cyber-green/10 pb-8">
-          <MarkdownRenderer content={content} />
+        <article className="prose prose-invert prose-green max-w-none text-sm leading-relaxed opacity-90 border-b border-cyber-green/10 pb-8">
+          <MDXRemote source={content} components={components} />
         </article>
 
         {/* Client side actions block */}
