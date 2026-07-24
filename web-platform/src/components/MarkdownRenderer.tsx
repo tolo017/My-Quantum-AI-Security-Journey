@@ -12,7 +12,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   const parts = content.split(/(<Challenge[\s\S]*?\/>)/g);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {parts.map((part, index) => {
         if (part.trim().startsWith("<Challenge")) {
           // Extract attributes using regex
@@ -56,7 +56,7 @@ function MarkdownBlock({ text }: { text: string }) {
       if (inCodeBlock) {
         // Close code block
         elements.push(
-          <pre key={`code-${index}`} className="bg-[#0D1321] p-5 border border-slate-800 rounded-lg font-mono text-xs overflow-x-auto text-[#E2E8F0] my-5">
+          <pre key={`code-${index}`} className="bg-black/80 p-4 border border-cyber-green/20 rounded font-mono text-xs overflow-x-auto text-white my-4">
             <code>{codeContent.join("\n")}</code>
           </pre>
         );
@@ -78,19 +78,19 @@ function MarkdownBlock({ text }: { text: string }) {
     // Headings
     if (trimmed.startsWith("# ")) {
       elements.push(
-        <h1 key={index} className="text-3xl font-extrabold text-white mt-8 mb-4 border-b border-slate-800 pb-2 tracking-tight">
+        <h1 key={index} className="text-2xl font-black text-white mt-6 mb-3 border-b border-cyber-green/20 pb-1">
           {parseInlineMarkdown(trimmed.slice(2))}
         </h1>
       );
     } else if (trimmed.startsWith("## ")) {
       elements.push(
-        <h2 key={index} className="text-2xl font-bold text-white mt-6 mb-3 tracking-tight">
+        <h2 key={index} className="text-xl font-bold text-white mt-5 mb-2">
           {parseInlineMarkdown(trimmed.slice(3))}
         </h2>
       );
     } else if (trimmed.startsWith("### ")) {
       elements.push(
-        <h3 key={index} className="text-lg font-semibold text-white mt-5 mb-2.5 tracking-tight">
+        <h3 key={index} className="text-lg font-semibold text-white mt-4 mb-2">
           {parseInlineMarkdown(trimmed.slice(4))}
         </h3>
       );
@@ -98,19 +98,19 @@ function MarkdownBlock({ text }: { text: string }) {
     // Lists
     else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
       elements.push(
-        <ul key={index} className="list-disc pl-6 text-sm my-1 text-slate-300 font-medium">
-          <li className="pl-1.5">{parseInlineMarkdown(trimmed.slice(2))}</li>
+        <ul key={index} className="list-disc pl-5 text-sm my-1 text-cyber-green/90">
+          <li>{parseInlineMarkdown(trimmed.slice(2))}</li>
         </ul>
       );
     }
     // Line breaks / separators
     else if (trimmed === "---") {
-      elements.push(<hr key={index} className="border-slate-800 my-8" />);
+      elements.push(<hr key={index} className="border-cyber-green/20 my-6" />);
     }
     // Standard paragraphs
     else if (trimmed) {
       elements.push(
-        <p key={index} className="text-sm leading-relaxed my-3.5 text-slate-300 font-medium">
+        <p key={index} className="text-sm leading-relaxed my-2 text-cyber-green/85">
           {parseInlineMarkdown(line)}
         </p>
       );
@@ -140,7 +140,7 @@ function parseInlineMarkdown(text: string) {
   parts = parts.flatMap((part) => {
     if (typeof part !== "string") return part;
     const pieces = part.split(inlineCodeRegex);
-    return pieces.map((piece, i) => (i % 2 === 1 ? <code key={`c-${i}`} className="bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded text-indigo-300 font-mono text-xs">{piece}</code> : piece));
+    return pieces.map((piece, i) => (i % 2 === 1 ? <code key={`c-${i}`} className="bg-black/50 border border-cyber-green/20 px-1.5 py-0.5 rounded text-white text-xs">{piece}</code> : piece));
   });
 
   return <>{parts}</>;
