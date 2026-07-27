@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, X, ShieldAlert } from "lucide-react";
+import { Terminal, RefreshCw, CheckCircle2, AlertCircle } from "lucide-react";
 
 interface ChallengeProps {
   id: string;
@@ -11,14 +11,32 @@ interface ChallengeProps {
 
 export default function Challenge({ id, correctAnswer, placeholder }: ChallengeProps) {
   const [input, setInput] = useState("");
+  const [logs, setLogs] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const verify = () => {
-    if (input.trim().toLowerCase() === correctAnswer.toLowerCase()) {
+  const handleVerify = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!input.trim()) return;
+
+    const currentInput = input;
+    setStatus("idle");
+
+    // Add prompt to output log
+    const newLogs = [...logs, `guest@beba-cyberlabs:~$ ${currentInput}`];
+
+    if (currentInput.trim().toLowerCase() === correctAnswer.trim().toLowerCase()) {
       setStatus("success");
+      setLogs([...newLogs, "Verifying checksum authentication token...", "✔ SUCCESS: Command executed successfully! Access granted.", "System state updated."]);
     } else {
       setStatus("error");
+      setLogs([...newLogs, "Verifying checksum authentication token...", `❌ ERROR: command not found or invalid response: "${currentInput}"`, "Please try again or consult the lesson notes above."]);
     }
+  };
+
+  const handleReset = () => {
+    setInput("");
+    setLogs([]);
+    setStatus("idle");
   };
 
   return (
@@ -48,7 +66,6 @@ export default function Challenge({ id, correctAnswer, placeholder }: ChallengeP
           <Check className="w-4 h-4" />
           <span>Access Granted. Challenge completed.</span>
         </div>
-      )}
 
       {status === "error" && (
         <div className="flex items-center gap-2 text-rose-500 text-xs font-semibold">
