@@ -6,30 +6,76 @@ topic: "Recon, Scan, Exploit, Post"
 difficulty: "Beginner"
 ---
 
-# The Hacker's Methodology
+# Day 8: The Hacker's Methodology - Cyber Attack Lifecycle
 
-To think like a hacker, you must follow the process. Hacking isn't just one magic command; it's a series of logical steps.
+To build quantum-safe or AI-driven defenses, you must first think like an attacker. Hacking is not random; it is a highly structured, systematic process.
 
-## 1. Reconnaissance
-Before touching the target, you gather intel.
-
-## 2. Scanning
-Now you look for doors and windows using tools like Nmap.
-
-## 3. Exploitation
-The moment of entry. Using an exploit to trigger a bug.
-
-## 4. Post-Exploitation
-Staying inside, escalating privileges, and cleaning up.
+Today, we dive into the industry-standard phases of a cyber attack, mapping the journey from initial reconnaissance to objective execution.
 
 ---
 
-### Challenge: The Nmap Identifier
-What Nmap flag is used to detect the **Service Version** of a running port?
+## 1. The 5 Phases of the Hacking Cycle
+
+```
++-----------------------------------------------------------------+
+|                    THE CYBER ATTACK TIMELINE                    |
++-----------------------------------------------------------------+
+| 1. Reconnaissance ---> 2. Scanning ---> 3. Gaining Access       |
+|                                                  |              |
+| 5. Covering Tracks <-- 4. Maintaining Access <---+              |
++-----------------------------------------------------------------+
+```
+
+### Phase 1: Reconnaissance (Information Gathering)
+The most critical stage. Up to 70% of an engagement's time is spent gathering data about the target.
+- **Passive Recon:** Gathering data without directly interacting with the target system (e.g., querying public Shodan records, WHOIS databases, searching open GitHub repositories for leaked credentials).
+- **Active Recon:** Interacting directly with target systems (e.g., DNS zone transfers, port probing). Active recon carries a risk of triggering firewall alerts.
+
+### Phase 2: Scanning & Enumeration
+Identifying open ports, active services, operating system versions, and known vulnerabilities on live targets.
+- **Tools:** `nmap`, `masscan`, `nikto`.
+- **Mechanics:**
+  - **TCP SYN Scan (`-sS`):** Stealth scan that sends a `SYN` packet and waits for a `SYN-ACK`. Instead of completing the handshake with an `ACK`, it sends a `RST` (Reset) packet to tear down the connection. This prevents many legacy firewalls from logging a full connection attempt.
+  - **TCP Connect Scan (`-sT`):** Completes the full 3-way handshake. Loud but highly accurate.
+
+### Phase 3: Gaining Access (Exploitation)
+Using the vulnerabilities discovered during the scanning phase to compromise the target. This could involve:
+- Injecting payloads into web forms (e.g., SQLi, Command Injection).
+- Executing buffer overflows to take control of system memory.
+- Using social engineering to trick a user into executing malware.
+
+### Phase 4: Maintaining Access (Persistence)
+Setting up a reliable way to reconnect to the compromised target, even if the system is rebooted or patched.
+- **Techniques:** Installing custom SSH backdoors, scheduling malicious cron jobs, or executing reverse shells.
+
+### Phase 5: Covering Tracks
+Deleting log files, flushing shell history files, and clearing system registries to prevent forensic investigators from discovering the intrusion.
+
+---
+
+## 2. Hands-On Lab: Network Probing with Nmap
+
+Let's simulate Phase 2 (Scanning) on your local network space. We will use the secure port scanner **`nmap`**:
+
+```bash
+# 1. Install nmap if not present on your Zorin host
+sudo apt install -y nmap
+
+# 2. Perform a fast scan of a local system (or loopback address) to find open ports
+nmap -F 127.0.0.1
+
+# 3. Perform a comprehensive service version detection and OS fingerprinting scan
+sudo nmap -sV -O 127.0.0.1
+```
+
+---
+
+### Challenge: Stealth Port Scan
+What is the standard command-line argument switch used in Nmap to initiate a stealthy **TCP SYN (half-open) Port Scan** (requiring sudo privileges on Linux)?
 
 <Challenge
-  id="day-8-nmap-flag"
+  id="day-8-nmap"
   type="input"
-  correctAnswer="-sV"
-  placeholder="Enter flag here..."
+  correctAnswer="-sS"
+  placeholder="Enter nmap switch (e.g. -sX)..."
 />

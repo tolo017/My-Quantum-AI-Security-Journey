@@ -1,0 +1,97 @@
+---
+title: "Virtualization & Lab Isolation"
+day: 5
+phase: 1
+topic: "Hypervisors, Docker, Sandboxes"
+difficulty: "Beginner"
+---
+
+# Day 5: Virtualization & Advanced Container Isolation
+
+In offensive security and malware analysis, you will run malicious code and vulnerable systems. If your laboratory isn't perfectly isolated, an exploit can escape onto your local host network, putting your personal files and devices at risk.
+
+Today, we dive into virtualization hypervisors, container mechanics, and advanced network sandboxing.
+
+---
+
+## 1. Hypervisors vs. Container Virtualization
+
+To isolate resources, we use two main forms of virtualization:
+
+```
++-----------------------------------+   +-----------------------------------+
+|         HYPERVISOR (VM)           |   |         CONTAINER DOCKER          |
++-----------------------------------+   +-----------------------------------+
+| [App A] [App B] | [App C]         |   | [App A]   [App B]   [App C]       |
+| [Guest OS]      | [Guest OS]      |   | [Bins/Libs] [Bins/Libs] [Bins/Li] |
+| [Hypervisor Engine (Type 1 or 2)] |   | [Docker Daemon (Engine)]          |
+| [Host Operating System]           |   | [Host OS (Shared Kernel Space)]   |
++-----------------------------------+   +-----------------------------------+
+```
+
+### Type-1 & Type-2 Hypervisors (Virtual Machines)
+- **Type-1 (Bare Metal):** Runs directly on the system's hardware (e.g., Proxmox, ESXi). It is highly performant and secure, making it ideal for servers.
+- **Type-2 (Hosted):** Runs as an application on a host OS (e.g., VirtualBox, VMware Workstation). It virtualizes every single hardware component (virtual CPU, RAM, disk, NIC), resulting in high resource overhead.
+
+### Containerization (Docker)
+Docker does not virtualize hardware. Instead, containers run as isolated processes sharing the host operating system's kernel. This is made possible by three Linux core features:
+1. **Namespaces (Isolates what you can see):** Limits access to processes (`pid`), network configurations (`net`), mount paths (`mnt`), and users (`user`).
+2. **Control Groups / cgroups (Isolates what you can use):** Controls resource consumption (limiting RAM, CPU cores, swap file sizes, and I/O speeds).
+3. **Union File System / UnionFS (Isolates storage):** Layered file system where changes are made in a temporary, top-level write layer, keeping base operating system images unmodified.
+
+---
+
+## 2. Dynamic Networking: Isolated Docker Bridges
+
+When analyzing vulnerable containers, you must place them in an isolated bridge network to prevent them from communicating with your local Zorin host or physical home router.
+
+```
+                  [ Physical Home Router / WAN ]
+                                ^
+                                | (NAT)
+                    [ host0 Interface / Zorin ]
+                                ^
+                                |
+                  +-------------v---------------+
+                  |  Docker Isolated Bridge Net |
+                  +------+---------------+------+
+                         |               |
+                         v               v
+                   [Kali Container] [Target App Container]
+```
+
+By default, Docker places containers in the shared `bridge` network. For complete isolation, we create custom network bridges:
+```bash
+# Create an isolated local subnet bridge
+docker network create --driver bridge --subnet=10.99.0.0/24 secure_cyber_range
+```
+
+This prevents external devices on your physical router from probing or attacking your active security labs.
+
+---
+
+## 3. Hands-On Lab: Isolating a Targeted Container
+
+Let's launch an isolated container attached specifically to our customized local network range:
+
+```bash
+# 1. Spin up an alpine linux container in our secure bridge range
+docker run -it --rm --network=secure_cyber_range --name target_host alpine sh
+
+# 2. Inside the container shell, verify its local IP configuration
+ip addr show
+```
+
+The container will receive a secure IP address inside the `10.99.0.x` range, completely segmented from your host machine's home network!
+
+---
+
+### Challenge: Sandbox Networking
+What is the primary Docker command used to list all existing virtual network interfaces, drivers, and bridges currently configured on your local host?
+
+<Challenge
+  id="day-5-network"
+  type="input"
+  correctAnswer="docker network ls"
+  placeholder="Enter docker command..."
+/>
