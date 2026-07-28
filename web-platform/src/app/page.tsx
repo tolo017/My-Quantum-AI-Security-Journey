@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 import {
   Terminal, Shield, Award, Settings, CheckCircle2, Lock, Unlock,
-  HelpCircle, Eye, EyeOff, Twitter, Instagram, Github, RefreshCw
+  HelpCircle, Eye, EyeOff, Twitter, Instagram, Github, ArrowRight, BookOpen, Cpu
 } from "lucide-react";
 import Link from "next/link";
 
-// 72-Day Curriculum Data
+// 72-Day Premium Curriculum Data
 const PHASES = [
   {
     number: 1,
     title: "The Foundations",
     range: "Days 1 - 14",
-    description: "Master the environment, the command line, and how data moves.",
+    description: "Master the Linux command line, persistent Docker lab isolation, networking topologies, and basic cryptography.",
     days: [
       { id: 1, title: "Environment Setup", topic: "Zorin OS, Python, Rust, Docker", difficulty: "Beginner" },
       { id: 2, title: "Linux Power User", topic: "Bash, Filesystems, Permissions", difficulty: "Beginner" },
@@ -35,7 +35,7 @@ const PHASES = [
     number: 2,
     title: "Programming for Hackers",
     range: "Days 15 - 28",
-    description: "Use Python and Rust to build offensive and defensive tools.",
+    description: "Use Python and Rust to construct production-grade offensive and defensive tooling.",
     days: [
       { id: 15, title: "Scapy Packet Manipulation", topic: "Custom Packets, Sniffing", difficulty: "Intermediate" },
       { id: 16, title: "Request-based Exploits", topic: "HTTP Automation, Exploiting API", difficulty: "Intermediate" },
@@ -57,7 +57,7 @@ const PHASES = [
     number: 3,
     title: "Generative AI Security",
     range: "Days 29 - 42",
-    description: "Red and White Hat techniques for Large Language Models.",
+    description: "Audit and exploit Large Language Models. Master direct/indirect prompt injection and adversarial guardrails.",
     days: [
       { id: 29, title: "How LLMs Work", topic: "Transformers, Attention, Weights", difficulty: "Intermediate" },
       { id: 30, title: "Local LLM Orchestration", topic: "Ollama, Llama.cpp, GPU", difficulty: "Intermediate" },
@@ -79,7 +79,7 @@ const PHASES = [
     number: 4,
     title: "Quantum Security & PQC",
     range: "Days 43 - 56",
-    description: "Understanding the Quantum threat and the new defense standards.",
+    description: "Analyze the quantum threat. Deploy Post-Quantum Cryptography (PQC) lattice algorithms (Kyber, Dilithium).",
     days: [
       { id: 43, title: "Quantum Computing Basics", topic: "Qubits, Superposition, Entanglement", difficulty: "Intermediate" },
       { id: 44, title: "Shor's Algorithm", topic: "RSA and ECC Decimation Theory", difficulty: "Advanced" },
@@ -101,7 +101,7 @@ const PHASES = [
     number: 5,
     title: "Hybrid Attacks & Advanced Defense",
     range: "Days 57 - 65",
-    description: "Combining AI and Quantum for high-end Cybersecurity.",
+    description: "Synthesize AI and quantum principles. Secure quantum clouds and deploy defensive machine learning classifiers.",
     days: [
       { id: 57, title: "AI-Enhanced Quantum Attacks", topic: "Using AI to optimize Shor's", difficulty: "Advanced" },
       { id: 58, title: "Quantum-Resistant AI Models", topic: "Securing AI with PQC wrappers", difficulty: "Advanced" },
@@ -110,7 +110,7 @@ const PHASES = [
       { id: 61, title: "Deepfakes & AI Social Eng", topic: "Synthetics, Cloning, Defenses", difficulty: "Intermediate" },
       { id: 62, title: "Detecting AI-generated Malware", topic: "Heuristics vs Machine Learning", difficulty: "Advanced" },
       { id: 63, title: "Securing the Quantum Cloud", topic: "APIs, Blind Quantum Computing", difficulty: "Advanced" },
-      { id: 64, title: "Incident Response for AI/Q Breaches", topic: "Breach forensics, Key compromise", difficulty: "Advanced" },
+      { id: 64, title: "Incident Response for AI/Q Breaches", topic: "Forensics, Key compromise", difficulty: "Advanced" },
       { id: 65, title: "Compliance, NIST & AI Acts", topic: "Regulation, Policies, Ethics", difficulty: "Intermediate" },
     ]
   },
@@ -118,7 +118,7 @@ const PHASES = [
     number: 6,
     title: "Final Capstone Project",
     range: "Days 66 - 72",
-    description: "Execute a multi-stage attack and defense simulation.",
+    description: "Apply your elite training in a simulated attack, defense, lateral move, and remediation engagement.",
     days: [
       { id: 66, title: "Project Design", topic: "Infrastructure blueprinting", difficulty: "Advanced" },
       { id: 67, title: "AI Vulnerability Discovery", topic: "Recon & Auto scan", difficulty: "Advanced" },
@@ -132,7 +132,6 @@ const PHASES = [
 ];
 
 export default function Dashboard() {
-  // Configured default completed days: Days 1-9 are completed
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showToken, setShowToken] = useState(false);
@@ -175,7 +174,7 @@ export default function Dashboard() {
     localStorage.setItem("beba_twitter_handle", twitterHandle);
     localStorage.setItem("beba_instagram_handle", instagramHandle);
     setShowSettings(false);
-    alert("System Configurations Updated Successfully!");
+    alert("Settings successfully saved!");
   };
 
   const toggleDayStatus = (id: number) => {
@@ -190,7 +189,7 @@ export default function Dashboard() {
   };
 
   const resetAllProgress = () => {
-    if (confirm("Are you sure you want to reset all progress back to Day 9?")) {
+    if (confirm("Are you sure you want to reset your course progress?")) {
       const defaultDays = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       setCompletedDays(defaultDays);
       localStorage.setItem("beba_completed_days", JSON.stringify(defaultDays));
@@ -201,150 +200,157 @@ export default function Dashboard() {
   const percentage = ((totalCompleted / 72) * 100).toFixed(1);
 
   return (
-    <main className="min-h-screen bg-cyber-dark text-cyber-green font-mono pb-20">
-      {/* Dynamic scan line and backdrop grid */}
-      <div className="absolute inset-0 bg-cyber-grid bg-[size:40px_40px] opacity-[0.07] pointer-events-none" />
-      <div className="fixed top-0 left-0 w-full h-[2px] bg-cyber-green/20 animate-pulse pointer-events-none z-50" />
+    <main className="min-h-screen bg-[#070B13] text-[#F3F4F6] font-sans">
 
-      {/* Navigation Header */}
-      <nav className="border-b border-cyber-green/30 bg-black/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4">
+      {/* Premium Navigation Header */}
+      <nav className="border-b border-slate-800 bg-[#0C1220]/80 backdrop-blur-md sticky top-0 z-40 px-8 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Shield className="w-8 h-8 text-cyber-green animate-pulse" />
+            <div className="p-2 bg-indigo-600/10 border border-indigo-500/20 rounded-lg">
+              <Shield className="w-6 h-6 text-indigo-500" />
+            </div>
             <div>
-              <h1 className="text-xl font-bold uppercase tracking-tighter text-white">
-                BEBA BEBA <span className="text-cyber-green">CYBER LABS</span>
+              <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
+                Beba <span className="text-indigo-400 font-medium">Cyber Labs</span>
               </h1>
-              <p className="text-[9px] opacity-60 tracking-widest uppercase">Quantum & GenAI Mastery Platform</p>
+              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Quantum & GenAI Educational Platform</p>
             </div>
           </div>
 
           <div className="flex gap-4">
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className="flex items-center gap-2 border border-cyber-green/40 hover:border-cyber-green hover:bg-cyber-green/10 text-xs py-2 px-3 transition-all"
+              className="flex items-center gap-2 border border-slate-700 hover:border-slate-500 hover:bg-slate-800 text-xs py-2 px-4 rounded-md font-semibold transition-all text-slate-200"
             >
-              <Settings className="w-4 h-4" />
-              <span>CONFIG.SYS</span>
+              <Settings className="w-4 h-4 text-slate-400" />
+              <span>Platform Settings</span>
             </button>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 mt-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-        {/* Left Stats & Settings Sidebar */}
+        {/* Left Side Sidebar - Learning Progress */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="cyber-border p-6 bg-black/60 backdrop-blur-sm space-y-6">
-            <div className="border-b border-cyber-green/30 pb-3 flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-white">System Status</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-cyber-green animate-ping" />
-            </div>
+          <div className="saas-card p-6 rounded-xl space-y-6">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-3">
+              Your Course Status
+            </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <span className="text-[10px] uppercase opacity-50 block">Clearance Level</span>
-                <span className="text-sm font-semibold tracking-wide text-white">LEVEL 4 - QUANTUM PRACTITIONER</span>
+                <span className="text-[11px] text-slate-400 uppercase tracking-wide block font-semibold">Current Rank</span>
+                <span className="text-sm font-bold text-white flex items-center gap-1.5 mt-0.5">
+                  <Award className="w-4 h-4 text-indigo-400" />
+                  <span>Quantum Practitioner</span>
+                </span>
               </div>
+
               <div>
-                <span className="text-[10px] uppercase opacity-50 block">Uptime</span>
-                <span className="text-sm font-semibold text-white">100% ONLINE</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase opacity-50 block">Course Progress</span>
-                <div className="flex justify-between text-xs mt-1 mb-2 font-bold">
-                  <span>{totalCompleted} / 72 DAYS</span>
+                <span className="text-[11px] text-slate-400 uppercase tracking-wide block font-semibold">Course Completion</span>
+                <div className="flex justify-between text-xs mt-1.5 mb-1.5 font-bold text-white">
+                  <span>{totalCompleted} / 72 Days</span>
                   <span>{percentage}%</span>
                 </div>
-                <div className="w-full h-2.5 bg-cyber-dark border border-cyber-green/20 overflow-hidden relative">
+                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden relative">
                   <div
-                    className="h-full bg-cyber-green transition-all duration-500 shadow-[0_0_8px_rgba(0,255,65,0.7)]"
+                    className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-cyber-green/20 pt-4 flex gap-2">
+            <div className="border-t border-slate-800 pt-4">
               <button
                 onClick={resetAllProgress}
-                className="w-full text-[10px] border border-red-500/50 text-red-400 hover:bg-red-500/10 py-1 px-2 transition-all"
+                className="w-full text-xs font-semibold border border-red-500/20 text-red-400 hover:bg-red-500/5 hover:border-red-500/30 py-2 rounded-md transition-all"
               >
-                RESET PROGRESS
+                Reset Progress
               </button>
             </div>
           </div>
 
-          <div className="cyber-border p-6 bg-black/60 backdrop-blur-sm space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-white border-b border-cyber-green/20 pb-2">Active Lab Stack</h3>
-            <ul className="text-[11px] space-y-2 opacity-80">
-              <li className="flex items-center gap-2">🟢 Kali Linux Container</li>
-              <li className="flex items-center gap-2">🟢 Parrot Sec Container</li>
-              <li className="flex items-center gap-2">🟢 Docker DMZ Network</li>
-              <li className="flex items-center gap-2">🟢 VSCode & PyCharm</li>
-              <li className="flex items-center gap-2">🟢 Local Rust Toolchain</li>
+          <div className="saas-card p-6 rounded-xl space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+              <Cpu className="w-4 h-4 text-indigo-400" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Virtual Lab Containers</h3>
+            </div>
+            <ul className="text-xs space-y-2.5 text-slate-300 font-medium">
+              <li className="flex items-center gap-2 text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Kali Linux Core Active
+              </li>
+              <li className="flex items-center gap-2 text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Parrot Security Active
+              </li>
+              <li className="flex items-center gap-2 text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Isolated Docker Bridge Net
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Center / Right Dashboard Content */}
-        <div className="lg:col-span-3 space-y-8">
+        {/* Center Main Curriculum Content */}
+        <div className="lg:col-span-3 space-y-10">
 
-          {/* Header Banner */}
-          <div className="p-8 cyber-border bg-gradient-to-r from-black/80 to-cyber-green/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <Terminal className="w-32 h-32" />
-            </div>
-            <h2 className="text-4xl font-extrabold uppercase tracking-tighter text-white mb-2">
-              QUANTUM & AI ROADMAP
+          {/* Main Hero Header Banner */}
+          <div className="p-8 rounded-xl saas-card bg-gradient-to-r from-[#0C1220] via-[#0E1528] to-indigo-950/20 relative overflow-hidden">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+              Quantum Security & Generative AI Roadmap
             </h2>
-            <p className="text-sm max-w-xl opacity-80 mb-6 leading-relaxed">
-              An intensive cyber-engineering roadmap covering prompt injections, deepfake defense, lattice-based cryptography, and side-channel exploits. Execute labs daily to claim graduation.
+            <p className="text-sm text-slate-300 max-w-2xl mb-6 leading-relaxed font-medium">
+              Welcome to your professional cybersecurity academy. Explore, audit, and secure advanced systems. Deploy lattice-based post-quantum cryptography, run deepfake forensics, and compromise LLMs in a 100% virtualized Docker laboratory.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/lessons/10">
-                <button className="neon-button text-xs font-bold flex items-center gap-2">
-                  <Terminal className="w-4 h-4" />
-                  <span>INITIALIZE DAY 10 MISSION</span>
+                <button className="btn-primary flex items-center gap-2">
+                  <Terminal className="w-4.5 h-4.5" />
+                  <span>Resume Next Lab: Day 10</span>
                 </button>
               </Link>
             </div>
           </div>
 
-          {/* Curriculum Phases Accordion / List */}
-          <div className="space-y-8">
+          {/* Grouped Course Curriculum */}
+          <div className="space-y-12">
             {PHASES.map((phase) => (
-              <div key={phase.number} className="space-y-4">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-cyber-green/40 pb-2">
+              <div key={phase.number} className="space-y-6">
+
+                {/* Phase Title Block */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-3">
                   <div>
-                    <h3 className="text-lg font-bold uppercase tracking-widest text-white flex items-center gap-2">
-                      <span className="text-cyber-green">PHASE {phase.number}:</span> {phase.title}
+                    <h3 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                      <span className="text-indigo-400 font-semibold">Phase {phase.number}:</span> {phase.title}
                     </h3>
-                    <p className="text-xs opacity-60 mt-1">{phase.description}</p>
+                    <p className="text-xs text-slate-400 font-medium mt-1">{phase.description}</p>
                   </div>
-                  <span className="text-xs font-mono uppercase bg-cyber-green/10 text-cyber-green border border-cyber-green/30 py-1 px-2.5 rounded mt-2 md:mt-0">
+                  <span className="text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 py-1.5 px-3 rounded-md mt-2 md:mt-0">
                     {phase.range}
                   </span>
                 </div>
 
+                {/* Day Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {phase.days.map((day) => {
                     const isCompleted = completedDays.includes(day.id);
-                    // Currently, let user access any of the first 10 days since they are physically in web-platform
                     const isAvailable = day.id <= 10;
 
                     return (
                       <div
                         key={day.id}
-                        className={`p-4 cyber-border bg-black/40 backdrop-blur-sm transition-all flex flex-col justify-between h-40 ${
+                        className={`p-5 rounded-lg saas-card transition-all flex flex-col justify-between h-40 ${
                           isAvailable
-                            ? "hover:bg-cyber-green/[0.04] border-cyber-green/40 hover:border-cyber-green cursor-pointer"
-                            : "opacity-40 border-cyber-green/10"
+                            ? "hover:border-indigo-500/30 cursor-pointer"
+                            : "opacity-45 pointer-events-none"
                         }`}
                       >
                         <div>
                           <div className="flex justify-between items-start">
-                            <span className="text-[10px] font-bold tracking-widest opacity-60">DAY {String(day.id).padStart(2, "0")}</span>
+                            <span className="text-[10px] font-bold text-slate-400 tracking-wider">DAY {String(day.id).padStart(2, "0")}</span>
                             <div className="flex gap-2">
                               <button
                                 onClick={(e) => {
@@ -356,33 +362,33 @@ export default function Dashboard() {
                                 className="hover:scale-110 transition-transform"
                               >
                                 {isCompleted ? (
-                                  <CheckCircle2 className="w-4.5 h-4.5 text-cyber-green fill-cyber-green/20" />
+                                  <CheckCircle2 className="w-5 h-5 text-emerald-400 fill-emerald-400/10" />
                                 ) : (
-                                  <div className="w-4 h-4 border border-cyber-green/40 rounded-full hover:border-cyber-green" />
+                                  <div className="w-5 h-5 border border-slate-700 rounded-full hover:border-indigo-400" />
                                 )}
                               </button>
                             </div>
                           </div>
 
-                          <h4 className="font-bold text-sm text-white uppercase mt-2 tracking-tight line-clamp-1">
+                          <h4 className="font-bold text-sm text-white tracking-tight mt-2 line-clamp-1">
                             {day.title}
                           </h4>
-                          <p className="text-[11px] opacity-70 mt-1 line-clamp-2">
+                          <p className="text-xs text-slate-400 font-medium mt-1 line-clamp-2">
                             {day.topic}
                           </p>
                         </div>
 
-                        <div className="flex justify-between items-center border-t border-cyber-green/10 pt-2 text-[10px] uppercase font-bold tracking-wider">
-                          <span className="opacity-60">{day.difficulty}</span>
+                        <div className="flex justify-between items-center border-t border-slate-800/60 pt-3 text-[11px] font-semibold">
+                          <span className="text-slate-400">{day.difficulty}</span>
                           {isAvailable ? (
-                            <Link href={`/lessons/${String(day.id).padStart(2, "0")}`} className="text-cyber-green hover:underline flex items-center gap-1">
-                              <span>ACCESS LAB</span>
-                              <Unlock className="w-3 h-3" />
+                            <Link href={`/lessons/${String(day.id).padStart(2, "0")}`} className="text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                              <span>Open Lesson</span>
+                              <Unlock className="w-3.5 h-3.5" />
                             </Link>
                           ) : (
-                            <span className="text-red-500/70 flex items-center gap-1">
-                              <span>LOCKED</span>
-                              <Lock className="w-3 h-3" />
+                            <span className="text-slate-500 flex items-center gap-1">
+                              <span>Locked</span>
+                              <Lock className="w-3.5 h-3.5" />
                             </span>
                           )}
                         </div>
@@ -397,42 +403,42 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* CONFIG MODAL */}
+      {/* SECURE CONFIG MODAL */}
       {showSettings && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-6">
-          <div className="max-w-lg w-full cyber-border bg-cyber-dark p-8 space-y-6">
-            <div className="flex justify-between items-center border-b border-cyber-green/30 pb-3">
+        <div className="fixed inset-0 bg-[#050811]/90 backdrop-blur-md z-50 flex items-center justify-center p-6">
+          <div className="max-w-lg w-full border border-slate-800 bg-[#0C1220] p-8 rounded-xl space-y-6">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
-                <Settings className="w-5 h-5 text-cyber-green animate-spin" />
-                <h3 className="text-lg font-bold uppercase text-white tracking-widest">CONFIG.SYS PANEL</h3>
+                <Settings className="w-5 h-5 text-indigo-400 animate-spin" style={{ animationDuration: '4s' }} />
+                <h3 className="text-lg font-bold text-white tracking-tight">Developer Sync & credentials</h3>
               </div>
               <button
                 onClick={() => setShowSettings(false)}
-                className="hover:text-white border border-cyber-green/40 px-2 py-0.5 text-xs"
+                className="hover:text-white border border-slate-700 hover:border-slate-500 px-3 py-1 rounded text-xs transition-all font-semibold"
               >
-                ESC
+                Close
               </button>
             </div>
 
-            <p className="text-xs opacity-70 leading-relaxed">
-              Provide credentials to link this web dashboard directly with your local files and GitHub repository. All keys are stored completely in your browser's <strong className="text-white">LocalStorage</strong> for maximum security.
+            <p className="text-xs text-slate-300 leading-relaxed font-medium">
+              Link this web portal directly with your Git repository. All keys are stored safely and solely inside your web browser's <strong className="text-white">LocalStorage</strong>.
             </p>
 
-            <form onSubmit={saveSettings} className="space-y-4 text-xs">
-              <div className="space-y-1">
-                <label className="block text-[10px] uppercase tracking-wider font-bold">GitHub Personal Access Token</label>
+            <form onSubmit={saveSettings} className="space-y-4 text-xs font-medium">
+              <div className="space-y-1.5">
+                <label className="block text-[11px] text-slate-300 font-bold uppercase tracking-wider">GitHub Personal Access Token</label>
                 <div className="relative">
                   <input
                     type={showToken ? "text" : "password"}
                     value={githubToken}
                     onChange={(e) => setGithubToken(e.target.value)}
                     placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx"
-                    className="w-full bg-black/80 border border-cyber-green/30 p-2.5 text-cyber-green outline-none focus:border-cyber-green pr-10 font-mono"
+                    className="w-full bg-[#070B13] border border-slate-800 rounded-md p-3 text-slate-200 outline-none focus:border-indigo-500 transition-all font-mono"
                   />
                   <button
                     type="button"
                     onClick={() => setShowToken(!showToken)}
-                    className="absolute right-2.5 top-2.5 opacity-60 hover:opacity-100"
+                    className="absolute right-3.5 top-3.5 text-slate-400 hover:text-white transition-colors"
                   >
                     {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -440,57 +446,57 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="block text-[10px] uppercase tracking-wider font-bold">Repo Owner</label>
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] text-slate-300 font-bold uppercase tracking-wider">GitHub Owner</label>
                   <input
                     type="text"
                     value={githubOwner}
                     onChange={(e) => setGithubOwner(e.target.value)}
                     placeholder="e.g. github-username"
-                    className="w-full bg-black/80 border border-cyber-green/30 p-2.5 text-cyber-green outline-none focus:border-cyber-green"
+                    className="w-full bg-[#070B13] border border-slate-800 rounded-md p-3 text-slate-200 outline-none focus:border-indigo-500 transition-all"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="block text-[10px] uppercase tracking-wider font-bold">Repo Name</label>
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] text-slate-300 font-bold uppercase tracking-wider">Repo Name</label>
                   <input
                     type="text"
                     value={githubRepo}
                     onChange={(e) => setGithubRepo(e.target.value)}
                     placeholder="e.g. 72-day-cyber-roadmap"
-                    className="w-full bg-black/80 border border-cyber-green/30 p-2.5 text-cyber-green outline-none focus:border-cyber-green"
+                    className="w-full bg-[#070B13] border border-slate-800 rounded-md p-3 text-slate-200 outline-none focus:border-indigo-500 transition-all"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="block text-[10px] uppercase tracking-wider font-bold">Twitter X Handle</label>
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] text-slate-300 font-bold uppercase tracking-wider">Twitter X Handle</label>
                   <input
                     type="text"
                     value={twitterHandle}
                     onChange={(e) => setTwitterHandle(e.target.value)}
                     placeholder="e.g. MyHandle"
-                    className="w-full bg-black/80 border border-cyber-green/30 p-2.5 text-cyber-green outline-none focus:border-cyber-green"
+                    className="w-full bg-[#070B13] border border-slate-800 rounded-md p-3 text-slate-200 outline-none focus:border-indigo-500 transition-all"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="block text-[10px] uppercase tracking-wider font-bold">Instagram Handle</label>
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] text-slate-300 font-bold uppercase tracking-wider">Instagram Handle</label>
                   <input
                     type="text"
                     value={instagramHandle}
                     onChange={(e) => setInstagramHandle(e.target.value)}
                     placeholder="e.g. my_insta_handle"
-                    className="w-full bg-black/80 border border-cyber-green/30 p-2.5 text-cyber-green outline-none focus:border-cyber-green"
+                    className="w-full bg-[#070B13] border border-slate-800 rounded-md p-3 text-slate-200 outline-none focus:border-indigo-500 transition-all"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-cyber-green/20 flex gap-4">
+              <div className="pt-4 border-t border-slate-800 flex gap-4">
                 <button
                   type="submit"
-                  className="w-full neon-button py-2.5 font-bold uppercase tracking-wider"
+                  className="w-full btn-primary font-bold uppercase tracking-wide"
                 >
-                  SAVE CONFIGURATIONS
+                  Save settings
                 </button>
               </div>
             </form>

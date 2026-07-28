@@ -8,71 +8,9 @@ difficulty: "Beginner"
 
 # Day 1: Establishing the Base of Operations
 
-Welcome to the **Beba Cyber Labs Academy**! Today we are building your base of operations from scratch. A hacker is only as good as their lab.
+Welcome to the **Beba Cyber Labs Academy**! Today, we are architecting and building your specialized cyber-workstation from scratch. A high-performing security engineer is only as good as their lab infrastructure.
 
-To master Quantum Security and Generative AI auditing, you need a robust, isolated, and highly performant workstation environment.
-
----
-
-## 1. Core Architecture Tooling
-
-### Operating System: Zorin OS
-Zorin OS is built on Ubuntu, making it stable, lightweight, and user-friendly. It handles Docker volumes and systems development perfectly while keeping host memory overhead to a minimum (essential for 8GB RAM workstations).
-
-### Automation & Scripting: Python 3
-Python is the undisputed king of AI development, quick script automation, and exploit prototyping. We will use it for Scapy packet crafting, LLM integrations, and quantum simulations (Qiskit).
-
-### Systems & Safety: Rust
-Rust is the future of systems security. With its strict compile-time memory safety, Rust prevents 70% of classic vulnerabilities (like buffer overflows) before they ever run. We will build high-speed network scanners and cryptographic toolkits with it.
-
-### Sandbox Isolation: Docker
-Traditional virtual machines (like VirtualBox) consume massive amounts of CPU and RAM. On an 8GB RAM host, running multiple VMs is painfully slow. Docker containers share the host's kernel, providing isolated Kali and Parrot OS sandboxes with near-zero overhead.
-
----
-
-## 2. Setting Up Your Workstation
-
-### Task A: System Updates
-Ensure your package manager is completely up to date before installing developer dependencies:
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-### Task B: Installing the Toolchain
-
-1. **Python 3 & Environment Tools:**
-   ```bash
-   sudo apt install -y python3 python3-pip python3-venv
-   ```
-
-2. **Rust Compiler (rustup):**
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   source $HOME/.cargo/env
-   rustc --version
-   ```
-
-3. **Docker Engine:**
-   ```bash
-   sudo apt install -y docker.io
-   sudo systemctl enable --now docker
-   sudo usermod -aG docker $USER
-   ```
-   *Note: Log out and log back in to apply the docker group changes to your user.*
-
----
-
-## 3. Hands-on Exercise: Verify Your Setup
-
-Verify that all three core tools are installed and accessible in your shell:
-- Run `python3 --version`
-- Run `cargo --version`
-- Run `docker --version`
-
-To verify Docker is working cleanly, pull and execute the default test container:
-```bash
-docker run --rm hello-world
-```
+To master Advanced Post-Quantum Cryptography (PQC), Generative AI auditing, and security scripting, you must configure a secure, isolated, and highly performant sandbox environment.
 
 ---
 

@@ -6,24 +6,97 @@ topic: "OSI Model, TCP/IP, DNS"
 difficulty: "Beginner"
 ---
 
-# Day 3: Networking Fundamentals I
+# Day 3: Networking Fundamentals I - Protocols & Layering
 
-Today we strip away the theory of the OSI model and look at how data actually moves through the wires (or air). If you can't understand the network, you can't defend it—or attack it.
+To defend or audit a digital environment, you must understand how data traverses the wire. If you cannot analyze standard network communication, you cannot identify malicious data streams.
 
-## Key Concepts
-- **Layer 2 (Data Link):** MAC addresses. How your computer talks to your router.
-- **Layer 3 (Network):** IP addresses. How your router talks to the world.
-- **Layer 4 (Transport):** TCP/UDP. Is the data guaranteed to arrive (TCP) or is it a "fire and forget" stream (UDP)?
-- **Layer 7 (Application):** HTTP, DNS, SSH. The stuff you actually interact with.
+Today, we cover Layer 2, Layer 3, Layer 4, and the Core DNS protocol.
+
+---
+
+## 1. Deep Dive: The TCP/IP vs. OSI Model
+
+The networking stack is abstracted into standard layers. Each layer wraps the upper layer's data with its own header (Encapuslation).
+
+```
++-----------------------------------+
+|      THE NETWORK DATA WRAPPER     |
++-----------------------------------+
+| [L2 MAC Header] [L3 IP] [L4 TCP]  | [Payload / App Data] | [L2 Trailer]
++-----------------------------------+
+```
+
+### The Key Layers:
+
+#### Layer 2: Data Link Layer (Frames)
+- **Protocol Data Unit:** Frame.
+- **Addressing:** MAC Addresses (e.g., `00:1A:2B:3C:4D:5E`).
+- **Function:** Local delivery on the same physical router switch. MAC addresses are hardcoded on your network interface card (NIC) and do not traverse internet gateways.
+
+#### Layer 3: Network Layer (Packets)
+- **Protocol Data Unit:** Packet.
+- **Addressing:** IP Addresses (IPv4: `192.168.1.1`, IPv6: `fe80::1`).
+- **Function:** Global routing across different subnets. Routers read the Destination IP Address in the IP header to send packets to external networks.
+
+#### Layer 4: Transport Layer (Segments)
+- **Protocol Data Unit:** Segment.
+- **Addressing:** Port Numbers (e.g., Port `80` for HTTP, Port `443` for HTTPS, Port `22` for SSH).
+- **Function:** Handles process-to-process delivery. Enforces communication rules:
+  - **TCP (Transmission Control Protocol):** Connection-oriented. Establishes a connection with a 3-way handshake (`SYN` -> `SYN-ACK` -> `ACK`), guarantees packet order, and handles error correction.
+  - **UDP (User Datagram Protocol):** Connectionless. Best-effort delivery without error correction or verification (ideal for streaming/DNS).
+
+---
+
+## 2. DNS: The Internet's Phone Book
+
+The **Domain Name System (DNS)** translates human-readable domain names (e.g., `bebasecurity.com`) into computer-readable IP addresses (e.g., `104.244.42.1`).
+
+```
+[Your Client] --- "Where is example.com?" ---> [Recursive DNS Resolver]
+                                                     |
+                                                     v
+                                            [Root Server] (.)
+                                                     |
+                                                     v
+                                            [TLD Server] (.com)
+                                                     |
+                                                     v
+                                            [Authoritative Nameserver]
+```
+
+### DNS Record Types:
+- **`A`:** Maps a domain to an IPv4 address.
+- **`AAAA`:** Maps a domain to an IPv6 address.
+- **`MX` (Mail Exchanger):** Directs email traffic to designated mail servers.
+- **`TXT`:** Stores plain text notes (used for SPF/DKIM verification and proof of domain ownership).
+
+---
+
+## 3. Hands-On Lab: Querying DNS via Command Line
+
+Open your terminal and run DNS queries using the **`dig` (Domain Information Groper)** command-line tool:
+
+```bash
+# 1. Perform a basic DNS query for a domain
+dig google.com
+
+# 2. Query only the mail servers (MX records) for a domain
+dig mx yahoo.com
+
+# 3. Request a compact, text-only response for quick scripts
+dig +short A google.com
+```
+
+Understanding how to construct raw DNS queries is crucial for mapping an organization’s public assets during reconnaissance (Active DNS Recon).
 
 ---
 
 ### Challenge: DNS Querying
-Which command line utility is used to perform detailed queries of DNS servers and inspect records like MX, NS, or A?
+Which command-line utility is used to perform comprehensive, low-level DNS queries and inspect DNS server records such as `A`, `MX`, `TXT`, or `AAAA` on Linux platforms?
 
 <Challenge
   id="day-3-dns"
   type="input"
   correctAnswer="dig"
-  placeholder="Enter command..."
+  placeholder="Enter command name..."
 />

