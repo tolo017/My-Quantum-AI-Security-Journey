@@ -2,28 +2,142 @@
 title: "Basic Cryptography"
 day: 6
 phase: 1
-topic: "Symmetric vs Asymmetric"
+topic: "Symmetric vs Asymmetric Encryption"
 difficulty: "Beginner"
 ---
 
-# Day 6: Basic Cryptography
+# Day 6: Basic Cryptography & Secure AES File Encryption
 
-Learn how to hide data in plain sight.
+Cryptography is the mathematical foundation of all digital security. Whether you are analyzing a secure communication channel, auditing a blockchain, or engineering post-quantum defenses, you must master encryption.
 
-## Symmetric Encryption
-One key for both encryption and decryption (AES).
-
-## Asymmetric Encryption
-A Public Key for everyone and a Private Key for you (RSA/ECC).
+Today, we dive deep into Symmetric block ciphers, Asymmetric encryption, key negotiation, and how to build a production-ready AES-256-GCM file encrypter in Python.
 
 ---
 
-### Challenge: The Public/Private Logic
-If Alice wants to send a secret message to Bob, which key should she use to encrypt it?
+## 1. Symmetric Cryptography (Shared Key)
+
+Symmetric cryptography uses the **same secret key** to encrypt and decrypt the plaintext data.
+
+```
+Plaintext (Message) --- [ Encrypt with Key K ] ---> Ciphertext (Secret)
+                                                           |
+Plaintext (Message) <--- [ Decrypt with Key K ] -----------+
+```
+
+### Advanced Encryption Standard (AES)
+AES is the industry standard symmetric block cipher. It operates on 128-bit blocks of data using key sizes of 128, 192, or 256 bits.
+
+#### Modes of Operation:
+- **Cipher Block Chaining (CBC):** Each plaintext block is XORed with the previous ciphertext block before encryption. It requires an **Initialization Vector (IV)** to ensure identical plaintext encrypts to different ciphertext. CBC is vulnerable to padding oracle attacks if not implemented with a MAC (Message Authentication Code).
+- **Galois/Counter Mode (GCM):** An authenticated encryption mode (AEAD). It provides both **confidentiality** and **integrity/authenticity** by producing an authentication tag along with the ciphertext. This prevents adversaries from altering ciphertext in transit (bit-flipping attacks).
+
+---
+
+## 2. Asymmetric Cryptography (Public-Private Key)
+
+Asymmetric cryptography uses a mathematically linked **Keypair**:
+- **Public Key:** Shared publicly. Anyone can use it to encrypt a message for you.
+- **Private Key:** Kept strictly secret. Only you can use it to decrypt messages encrypted with your public key.
+
+```
+Plaintext ---> [ Encrypt with Bob's PUBLIC Key ] ---> Ciphertext
+                                                             |
+Plaintext <--- [ Decrypt with Bob's PRIVATE Key ] -----------+
+```
+
+### Core Asymmetric Algorithms:
+- **RSA (Rivest-Shamir-Adleman):** Relies on the mathematical difficulty of factoring large prime numbers.
+- **ECC (Elliptic Curve Cryptography):** Relies on finding discrete logarithms on elliptic curves. ECC offers the same cryptographic strength as RSA but uses much smaller keys (e.g., a 256-bit ECC key offers the same security as a 3072-bit RSA key), reducing computing power and bandwidth overhead.
+
+---
+
+## 3. Diffie-Hellman Key Exchange
+
+How do two systems negotiate a shared symmetric key over an unsecure public channel without an eavesdropper stealing it? They use the **Diffie-Hellman (DH)** algorithm:
+
+```
+  Alice (Symmetric)                                 Bob (Symmetric)
+     Private: a                                        Private: b
+     Public:  A = g^a mod p                           Public:  B = g^b mod p
+
+     Alice sends Public A ------------> Bob receives Public A
+     Alice receives Public B <--------- Bob sends Public B
+
+  Shared Session Key:                               Shared Session Key:
+  K = B^a mod p                                     K = A^b mod p
+
+  Mathematically: K = (g^b)^a mod p = g^(ab) mod p = (g^a)^b mod p
+```
+
+Even if an attacker intercepts the public values `A` and `B`, they cannot calculate the shared session key `K` without knowing the private exponents `a` or `b`.
+
+---
+
+## 4. Field Portfolio Project: Secure AES-256-GCM Backup Tool (Python)
+
+Let's build a secure utility to encrypt local files using AES-256-GCM. We derive our cryptographic key securely using **PBKDF2** (Password-Based Key Derivation Function 2) with a random cryptographic salt. This represents the industry gold standard for host-level symmetric data encryption.
+
+### Step 1: Install PyCryptodome Library
+```bash
+pip3 install pycryptodome
+```
+
+### Step 2: Create Your Cryptographic Backup Tool
+Create a file named `secure_backup.py`:
+```python
+import os
+import sys
+from Cryptodome.Cipher import AES
+from Cryptodome.Protocol.KDF import PBKDF2
+
+def encrypt_file(file_path, password):
+    # 1. Generate a random 16-byte salt and 12-byte IV (for GCM)
+    salt = os.urandom(16)
+    iv = os.urandom(12)
+
+    # 2. Derive a 256-bit key using PBKDF2
+    key = PBKDF2(password, salt, dkLen=32, count=100000)
+
+    # 3. Read original file contents
+    with open(file_path, "rb") as f:
+        data = f.read()
+
+    # 4. Initialize AES GCM and encrypt
+    cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
+    ciphertext, tag = cipher.encrypt_and_digest(data)
+
+    # 5. Write out the encrypted backup bundle: Salt + IV + Tag + Ciphertext
+    backup_path = file_path + ".enc"
+    with open(backup_path, "wb") as f_out:
+        f_out.write(salt)
+        f_out.write(iv)
+        f_out.write(tag)
+        f_out.write(ciphertext)
+    print(f"[+] Backup complete! Encrypted payload saved to: {backup_path}")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python3 secure_backup.py <file_path> <password>")
+        sys.exit(1)
+    encrypt_file(sys.argv[1], sys.argv[2])
+```
+
+### Step 3: Test Encryption
+```bash
+echo "CONFIDENTIAL REPORT: Project Aurora Keycodes" > secret.txt
+python3 secure_backup.py secret.txt "MySecureSuperPassword123!"
+```
+
+Verify that `secret.txt.enc` exists on disk. This is a powerful, production-grade backup tool that you can add straight to your security operations portfolio!
+
+---
+
+### Challenge: Symmetric vs Asymmetric
+What is the name of the industry standard symmetric key algorithm, approved by NIST, that encrypts data in 128-bit blocks using a single shared secret key (commonly with key sizes of 128, 192, or 256 bits)?
 
 <Challenge
   id="day-6-crypto"
   type="input"
-  correctAnswer="Bob's Public Key"
-  placeholder="e.g., Alice's Private Key"
+  correctAnswer="AES"
+  placeholder="Enter algorithm acronym..."
 />
