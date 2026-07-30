@@ -6,15 +6,15 @@ topic: "Bash, Filesystems, Permissions"
 difficulty: "Beginner"
 ---
 
-# Day 2: Linux Power User & Automated System Auditing
+# Day 2: Linux Power User & Directory Control
 
-To be effective in cybersecurity, the terminal must be your primary workspace. You don't just execute commands—you manipulate filesystems, permissions, streams, and process threads.
+To be effective in cybersecurity, the terminal must be your primary workspace. You don't just execute commands—you manipulate filesystems, permissions, and streams.
 
-Today, we dive deep into Linux directory structures, file descriptors, permission masks, and how to write a real automated system auditing tool.
+Today, we dive deep into the directory structures, permissions, and pipeline operations of Linux.
 
 ---
 
-## 1. Deep Dive: Linux Filesystem Architecture & Processes
+## 1. Deep Dive: Linux Filesystem Architecture
 
 In Linux, **everything is a file**—even physical hard drives, hardware inputs, network sockets, and processes.
 
@@ -35,23 +35,9 @@ In Linux, **everything is a file**—even physical hard drives, hardware inputs,
 
 ---
 
-## 2. Master Linux Permissions & File Descriptors
+## 2. Master Linux Permissions (Octal & Symbolic)
 
-### Standard Streams
-Every running process has three default communication streams, represented by **File Descriptors (FD)**:
-1. **Standard Input (stdin - FD 0):** Keyboards or redirection files.
-2. **Standard Output (stdout - FD 1):** Text output printed to screen.
-3. **Standard Error (stderr - FD 2):** Diagnostic and error outputs.
-
-To redirect stderr to stdout and dump them into a black hole:
-```bash
-some_command > /dev/null 2>&1
-```
-
-### Octal Permission Breakdown:
-- **`r` (Read) = 4**
-- **`w` (Write) = 2**
-- **`x` (Execute) = 1**
+Security starts with the **Principle of Least Privilege**. Linux enforces this via permissions:
 
 ```
   rwx      r-x      r-x
@@ -59,8 +45,14 @@ some_command > /dev/null 2>&1
 (Owner)
 ```
 
-- `chmod 755 file.sh` -> Owner can read/write/execute (7), group & others can read/execute (5).
-- `chmod 600 config.json` -> Only owner can read/write (6). Everyone else is denied (0).
+### Octal Permission Breakdown:
+- **`r` (Read) = 4**
+- **`w` (Write) = 2**
+- **`x` (Execute) = 1**
+
+Add them up to represent each bracket:
+- `chmod 755 file.sh` -> Owner can read/write/execute (4+2+1=7), group & others can read/execute (4+1=5).
+- `chmod 600 config.json` -> Only owner can read/write (4+2=6). Everyone else is denied (0).
 - `chmod 400 private_key.pem` -> Read-only for the owner (4). Essential protection for secure SSH identity keys.
 
 ---
@@ -81,55 +73,7 @@ grep "Accepted publickey" /var/log/auth.log | awk '{print $11}' | sort -u
 
 ---
 
-## 4. Field Portfolio Project: System Security Auditing Engine (Bash)
-
-As a cybersecurity professional, you need to automate security health checks on Linux hosts. We will construct a lightweight, high-performance auditing script that checks:
-1. SUID binaries (privilege escalation paths).
-2. World-writable directories.
-3. Active network connections.
-
-### Step 1: Create Your Script File
-```bash
-mkdir -p ~/beba_audit
-cd ~/beba_audit
-touch sys_audit.sh
-chmod +x sys_audit.sh
-```
-
-### Step 2: Write the Audit Logic
-Open `sys_audit.sh` and populate it with the following:
-```bash
-#!/bin/bash
-echo "=== BEBA SECURITY LABS: SYSTEM AUDIT ENGINE ==="
-echo "Date: $(date)"
-echo "-----------------------------------------------"
-
-# 1. Check for SUID files (files executing with root permissions)
-echo "[+] Scanning for SUID Binaries..."
-find /usr/bin /usr/sbin -perm -4000 -type f 2>/dev/null | head -n 10
-
-# 2. Check for world-writable directories
-echo -e "\n[+] Scanning for World-Writable Directories..."
-find / -perm -o+w -type d 2>/dev/null | head -n 10
-
-# 3. Check for active TCP connections on host
-echo -e "\n[+] Scanning Active Network Sockets..."
-ss -tuln
-
-echo "-----------------------------------------------"
-echo "=== AUDIT COMPLETE ==="
-```
-
-### Step 3: Run the Script
-```bash
-./sys_audit.sh
-```
-
-This tool is a fundamental utility for any security engineer's personal system hardening toolkit!
-
----
-
-## 5. Hands-on Lab: Directory Permissions Exercise
+## 4. Hands-on Lab: Directory Permissions Exercise
 
 Let's test these concepts. Open a terminal and run the following:
 
