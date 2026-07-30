@@ -6,7 +6,7 @@ topic: "Zorin OS, Python, Rust, Docker"
 difficulty: "Beginner"
 ---
 
-# Day 1: Establishing the Base of Operations & Virtual Range Orchestration
+# Day 1: Establishing the Base of Operations
 
 Welcome to the **Beba Cyber Labs Academy**! Today, we are architecting and building your specialized cyber-workstation from scratch. A high-performing security engineer is only as good as their lab infrastructure.
 
@@ -14,7 +14,7 @@ To master Advanced Post-Quantum Cryptography (PQC), Generative AI auditing, and 
 
 ---
 
-## 1. Deep Dive: Core Platform Tooling & Operating System Architecture
+## 1. Deep Dive: Core Platform Tooling
 
 Before executing terminal instructions, let's understand the engineering rationale behind our core technology stack:
 
@@ -84,69 +84,7 @@ sudo apt update && sudo apt upgrade -y
 
 ---
 
-## 3. Field Portfolio Project: Local Docker Range Orchestration
-
-In the field, cybersecurity experts must be able to orchestrate and deploy simulated, reproducible attack environments. For your first portfolio project, we will create a multi-container network containing:
-1. A **Vulnerable target app container** running an unpatched server.
-2. An **Attack sandbox container** connected over an isolated bridge network.
-
-### Step 1: Create Your Lab Directory Structure
-```bash
-mkdir -p ~/beba_cyber_range/config
-cd ~/beba_cyber_range
-```
-
-### Step 2: Write the Orchestration Descriptor (`docker-compose.yml`)
-Create a file named `docker-compose.yml` in this directory:
-```yaml
-version: '3.8'
-
-services:
-  vulnerable_app:
-    image: vulhub/php:8.1-backdoor
-    container_name: lab_target
-    networks:
-      range_net:
-        ipv4_address: 10.10.10.5
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-
-  attacker_box:
-    image: alpine:latest
-    container_name: lab_attacker
-    command: /bin/sh -c "apk add --no-cache curl nmap && sleep infinity"
-    networks:
-      range_net:
-        ipv4_address: 10.10.10.10
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-
-networks:
-  range_net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.10.10.0/24
-```
-
-### Step 3: Launch and Verify the range
-```bash
-# Start the containers in the background
-docker-compose up -d
-
-# Check running container status
-docker-compose ps
-```
-
----
-
-## 4. Hands-On Lab Exercise: Environment Verification
+## 3. Hands-On Lab Exercise: Environment Verification
 
 Let's verify that your newly installed toolchains are working as expected by running a simple test.
 

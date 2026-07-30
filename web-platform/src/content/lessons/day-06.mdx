@@ -6,11 +6,11 @@ topic: "Symmetric vs Asymmetric Encryption"
 difficulty: "Beginner"
 ---
 
-# Day 6: Basic Cryptography & Secure AES File Encryption
+# Day 6: Basic Cryptography - Symmetric vs. Asymmetric
 
 Cryptography is the mathematical foundation of all digital security. Whether you are analyzing a secure communication channel, auditing a blockchain, or engineering post-quantum defenses, you must master encryption.
 
-Today, we dive deep into Symmetric block ciphers, Asymmetric encryption, key negotiation, and how to build a production-ready AES-256-GCM file encrypter in Python.
+Today, we dive deep into Symmetric block ciphers, Asymmetric encryption, and key negotiation.
 
 ---
 
@@ -70,65 +70,6 @@ How do two systems negotiate a shared symmetric key over an unsecure public chan
 ```
 
 Even if an attacker intercepts the public values `A` and `B`, they cannot calculate the shared session key `K` without knowing the private exponents `a` or `b`.
-
----
-
-## 4. Field Portfolio Project: Secure AES-256-GCM Backup Tool (Python)
-
-Let's build a secure utility to encrypt local files using AES-256-GCM. We derive our cryptographic key securely using **PBKDF2** (Password-Based Key Derivation Function 2) with a random cryptographic salt. This represents the industry gold standard for host-level symmetric data encryption.
-
-### Step 1: Install PyCryptodome Library
-```bash
-pip3 install pycryptodome
-```
-
-### Step 2: Create Your Cryptographic Backup Tool
-Create a file named `secure_backup.py`:
-```python
-import os
-import sys
-from Cryptodome.Cipher import AES
-from Cryptodome.Protocol.KDF import PBKDF2
-
-def encrypt_file(file_path, password):
-    # 1. Generate a random 16-byte salt and 12-byte IV (for GCM)
-    salt = os.urandom(16)
-    iv = os.urandom(12)
-
-    # 2. Derive a 256-bit key using PBKDF2
-    key = PBKDF2(password, salt, dkLen=32, count=100000)
-
-    # 3. Read original file contents
-    with open(file_path, "rb") as f:
-        data = f.read()
-
-    # 4. Initialize AES GCM and encrypt
-    cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
-    ciphertext, tag = cipher.encrypt_and_digest(data)
-
-    # 5. Write out the encrypted backup bundle: Salt + IV + Tag + Ciphertext
-    backup_path = file_path + ".enc"
-    with open(backup_path, "wb") as f_out:
-        f_out.write(salt)
-        f_out.write(iv)
-        f_out.write(tag)
-        f_out.write(ciphertext)
-    print(f"[+] Backup complete! Encrypted payload saved to: {backup_path}")
-
-if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python3 secure_backup.py <file_path> <password>")
-        sys.exit(1)
-    encrypt_file(sys.argv[1], sys.argv[2])
-```
-
-### Step 3: Test Encryption
-```bash
-echo "CONFIDENTIAL REPORT: Project Aurora Keycodes" > secret.txt
-python3 secure_backup.py secret.txt "MySecureSuperPassword123!"
-```
-
-Verify that `secret.txt.enc` exists on disk. This is a powerful, production-grade backup tool that you can add straight to your security operations portfolio!
 
 ---
 
