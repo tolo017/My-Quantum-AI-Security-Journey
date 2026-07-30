@@ -1,0 +1,161 @@
+---
+title: "Linux Power User & Docker Setup"
+day: 2
+phase: 1
+topic: "Bash, Filesystems, Permissions"
+difficulty: "Beginner"
+---
+
+# Day 2: Linux Power User & Automated System Auditing
+
+To be effective in cybersecurity, the terminal must be your primary workspace. You don't just execute commands—you manipulate filesystems, permissions, streams, and process threads.
+
+Today, we dive deep into Linux directory structures, file descriptors, permission masks, and how to write a real automated system auditing tool.
+
+---
+
+## 1. Deep Dive: Linux Filesystem Architecture & Processes
+
+In Linux, **everything is a file**—even physical hard drives, hardware inputs, network sockets, and processes.
+
+```
+       / (Root Directory)
+       |
+  +----+----+----+----+----+
+  |         |         |         |
+/bin      /etc      /var      /tmp
+(Binaries) (Configs) (Logs)    (Volatile Temp)
+```
+
+### Critical Directories to Know:
+- **`/etc` (System Configuration):** Holds plain-text system-wide configurations (e.g., user passwords in `/etc/shadow`, DNS configs in `/etc/resolv.conf`).
+- **`/var/log` (Variable Logs):** Essential for blue teaming and forensic analysis. This is where audit logs, SSH attempts (`auth.log`), and system events are written.
+- **`/tmp` (Volatile Storage):** Read/write space available to all users. Processes write temporary data here. On system reboot, this directory is wiped. Perfect for downloading short-lived exploit payloads.
+- **`/proc` (Process Directory):** A virtual filesystem showing live kernel metrics and process tracking info.
+
+---
+
+## 2. Master Linux Permissions & File Descriptors
+
+### Standard Streams
+Every running process has three default communication streams, represented by **File Descriptors (FD)**:
+1. **Standard Input (stdin - FD 0):** Keyboards or redirection files.
+2. **Standard Output (stdout - FD 1):** Text output printed to screen.
+3. **Standard Error (stderr - FD 2):** Diagnostic and error outputs.
+
+To redirect stderr to stdout and dump them into a black hole:
+```bash
+some_command > /dev/null 2>&1
+```
+
+### Octal Permission Breakdown:
+- **`r` (Read) = 4**
+- **`w` (Write) = 2**
+- **`x` (Execute) = 1**
+
+```
+  rwx      r-x      r-x
+ User     Group    Others
+(Owner)
+```
+
+- `chmod 755 file.sh` -> Owner can read/write/execute (7), group & others can read/execute (5).
+- `chmod 600 config.json` -> Only owner can read/write (6). Everyone else is denied (0).
+- `chmod 400 private_key.pem` -> Read-only for the owner (4). Essential protection for secure SSH identity keys.
+
+---
+
+## 3. Power of the Unix Pipeline (`|`)
+
+The Unix pipeline `|` redirects the standard output (`stdout`) of one command as the standard input (`stdin`) of another. By chaining lightweight utility tools, you can filter and parse massive amounts of data:
+
+- **`grep`:** Searches files for matching regular expressions.
+- **`awk`:** Processes structured tabular data (column parsing).
+- **`sed`:** Stream editor for text manipulation on the fly.
+
+### Example: Audit Active SSH Users
+Parse the log file, find successful SSH sessions, and display unique IP addresses:
+```bash
+grep "Accepted publickey" /var/log/auth.log | awk '{print $11}' | sort -u
+```
+
+---
+
+## 4. Field Portfolio Project: System Security Auditing Engine (Bash)
+
+As a cybersecurity professional, you need to automate security health checks on Linux hosts. We will construct a lightweight, high-performance auditing script that checks:
+1. SUID binaries (privilege escalation paths).
+2. World-writable directories.
+3. Active network connections.
+
+### Step 1: Create Your Script File
+```bash
+mkdir -p ~/beba_audit
+cd ~/beba_audit
+touch sys_audit.sh
+chmod +x sys_audit.sh
+```
+
+### Step 2: Write the Audit Logic
+Open `sys_audit.sh` and populate it with the following:
+```bash
+#!/bin/bash
+echo "=== BEBA SECURITY LABS: SYSTEM AUDIT ENGINE ==="
+echo "Date: $(date)"
+echo "-----------------------------------------------"
+
+# 1. Check for SUID files (files executing with root permissions)
+echo "[+] Scanning for SUID Binaries..."
+find /usr/bin /usr/sbin -perm -4000 -type f 2>/dev/null | head -n 10
+
+# 2. Check for world-writable directories
+echo -e "\n[+] Scanning for World-Writable Directories..."
+find / -perm -o+w -type d 2>/dev/null | head -n 10
+
+# 3. Check for active TCP connections on host
+echo -e "\n[+] Scanning Active Network Sockets..."
+ss -tuln
+
+echo "-----------------------------------------------"
+echo "=== AUDIT COMPLETE ==="
+```
+
+### Step 3: Run the Script
+```bash
+./sys_audit.sh
+```
+
+This tool is a fundamental utility for any security engineer's personal system hardening toolkit!
+
+---
+
+## 5. Hands-on Lab: Directory Permissions Exercise
+
+Let's test these concepts. Open a terminal and run the following:
+
+```bash
+# 1. Create a secure vault directory
+mkdir ~/security_vault
+cd ~/security_vault
+
+# 2. Create a secrets text file
+echo "SECRET_PASSWORD_123" > secrets.txt
+
+# 3. Lock down permissions so ONLY you can view/modify it
+chmod 600 secrets.txt
+
+# 4. Attempt to read it as another user (simulated)
+ls -la secrets.txt
+```
+
+---
+
+### Challenge: Permission Lockdown
+What octal chmod command is used to set the permissions of a file so that the **owner** has exclusive read and write permissions (6), while the group and all other users on the system have absolutely no permissions at all (0)?
+
+<Challenge
+  id="day-2-chmod"
+  type="input"
+  correctAnswer="chmod 600 secrets.txt"
+  placeholder="Enter complete command..."
+/>
