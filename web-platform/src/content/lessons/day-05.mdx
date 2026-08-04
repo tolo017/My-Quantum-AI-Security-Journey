@@ -6,11 +6,11 @@ topic: "Hypervisors, Docker, Sandboxes"
 difficulty: "Beginner"
 ---
 
-# Day 5: Virtualization, Container Escapes & Custom Lab Networks
+# Day 5: Virtualization & Advanced Container Isolation
 
 In offensive security and malware analysis, you will run malicious code and vulnerable systems. If your laboratory isn't perfectly isolated, an exploit can escape onto your local host network, putting your personal files and devices at risk.
 
-Today, we dive into virtualization hypervisors, container breakouts, privileged capabilities, and advanced network sandboxing.
+Today, we dive into virtualization hypervisors, container mechanics, and advanced network sandboxing.
 
 ---
 
@@ -39,9 +39,6 @@ Docker does not virtualize hardware. Instead, containers run as isolated process
 2. **Control Groups / cgroups (Isolates what you can use):** Controls resource consumption (limiting RAM, CPU cores, swap file sizes, and I/O speeds).
 3. **Union File System / UnionFS (Isolates storage):** Layered file system where changes are made in a temporary, top-level write layer, keeping base operating system images unmodified.
 
-### Container Escape Security Risks
-Because containers share the host's operating system kernel, running a container with the `--privileged` flag or adding raw kernel capabilities (like `--cap-add=SYS_ADMIN`) completely breaks this boundary. If an attacker gains code execution in a privileged container, they can mount the host's `/dev/sda1` drive and execute commands directly on the host computer, completely escaping the sandbox!
-
 ---
 
 ## 2. Dynamic Networking: Isolated Docker Bridges
@@ -69,79 +66,11 @@ By default, Docker places containers in the shared `bridge` network. For complet
 docker network create --driver bridge --subnet=10.99.0.0/24 secure_cyber_range
 ```
 
----
-
-## 3. Field Portfolio Project: Multi-Subnet Hardened Environment
-
-In enterprise cloud security, you must implement **Defense in Depth** by segmenting services into multi-tiered subnets. Let's build a hardened multi-subnet production architecture containing:
-1. A **Web Frontend** subnet accessible via specific ports.
-2. An **Isolated Database** subnet with zero external network connectivity.
-
-### Step 1: Create a Lab Directory
-```bash
-mkdir -p ~/beba_isolated_network
-cd ~/beba_isolated_network
-```
-
-### Step 2: Configure the Subnets (`docker-compose.yml`)
-Create a `docker-compose.yml` that establishes strict subnet segmentation:
-```yaml
-version: '3.8'
-
-services:
-  web_frontend:
-    image: nginx:alpine
-    container_name: web_service
-    ports:
-      - "8080:80"
-    networks:
-      - frontend_net
-      - backend_net
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
-    tmpfs:
-      - /var/cache/nginx
-      - /var/run
-
-  database_backend:
-    image: redis:alpine
-    container_name: db_service
-    networks:
-      - backend_net
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 256M
-
-networks:
-  frontend_net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.50.1.0/24
-  backend_net:
-    driver: bridge
-    internal: true # Totally isolated from the external host and WAN
-    ipam:
-      config:
-        - subnet: 172.50.2.0/24
-```
-
-### Step 3: Run and Verify Isolation
-```bash
-docker-compose up -d
-
-# Verify database_backend cannot contact the external world (should return timeout/fail)
-docker exec -it db_service ping -c 2 google.com
-```
-
-This ensures that even if an attacker compromises the Nginx web container, they cannot access your host network or resolve external internet targets.
+This prevents external devices on your physical router from probing or attacking your active security labs.
 
 ---
 
-## 4. Hands-On Lab: Isolating a Targeted Container
+## 3. Hands-On Lab: Isolating a Targeted Container
 
 Let's launch an isolated container attached specifically to our customized local network range:
 

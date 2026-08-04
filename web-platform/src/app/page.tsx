@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   Terminal, Shield, Award, Settings, CheckCircle2, Lock, Unlock,
-  HelpCircle, Eye, EyeOff, Twitter, Instagram, Github, ArrowRight, BookOpen, Cpu, Globe, Crosshair, Briefcase, Bookmark, ChevronRight
+  HelpCircle, Eye, EyeOff, Twitter, Instagram, Github, ArrowRight, BookOpen, Cpu
 } from "lucide-react";
 import Link from "next/link";
 
@@ -131,35 +131,8 @@ const PHASES = [
   }
 ];
 
-// Career role specifications for recruiters
-const CAREER_PROFILES = [
-  {
-    role: "AI Red Teamer / LLM Auditor",
-    salary: "$140,000 - $190,000 / year",
-    description: "Evaluates generative AI pipelines, bypasses safety filters, and mitigates output handling compromises.",
-    skills: "LLM Orchestrations, System Prompt Engineering, Python Exploits, Content Bypass, Agent Security",
-    timeline: "Days 29 - 42"
-  },
-  {
-    role: "Post-Quantum Cryptography Architect",
-    salary: "$150,000 - $210,000 / year",
-    description: "Architects and implements quantum-safe trust infrastructures, migrates legacy VPNs/SSL to NIST-approved lattice ciphers.",
-    skills: "Lattice-Based Math, Kyber, Dilithium, OpenSSL PKI, Crypto-Agility, Side-Channel Audits",
-    timeline: "Days 43 - 56"
-  },
-  {
-    role: "Advanced DevSecOps / Cloud Auditor",
-    salary: "$130,000 - $175,000 / year",
-    description: "Hardens cloud microservice clusters, automates vulnerability scans, and builds secure, zero-trust network subnets.",
-    skills: "Docker Isolation, Linux Namespaces, Bash Auditing, SSH Port Pivoting, Custom PKIs",
-    timeline: "Days 1 - 14"
-  }
-];
-
 export default function Dashboard() {
   const [completedDays, setCompletedDays] = useState<number[]>([]);
-  const [completedGuided, setCompletedGuided] = useState<number[]>([]);
-  const [completedRogue, setCompletedRogue] = useState<number[]>([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showToken, setShowToken] = useState(false);
 
@@ -184,12 +157,6 @@ export default function Dashboard() {
       setCompletedDays(defaultDays);
       localStorage.setItem("beba_completed_days", JSON.stringify(defaultDays));
     }
-
-    // Read completed guided & rogue labs
-    const savedGuided = localStorage.getItem("beba_completed_guided_labs");
-    const savedRogue = localStorage.getItem("beba_completed_rogue_labs");
-    if (savedGuided) setCompletedGuided(JSON.parse(savedGuided));
-    if (savedRogue) setCompletedRogue(JSON.parse(savedRogue));
 
     // Read Settings
     setGithubToken(localStorage.getItem("beba_github_token") || "");
@@ -222,20 +189,15 @@ export default function Dashboard() {
   };
 
   const resetAllProgress = () => {
-    if (confirm("Are you sure you want to reset your progress?")) {
+    if (confirm("Are you sure you want to reset your course progress?")) {
       const defaultDays = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       setCompletedDays(defaultDays);
       localStorage.setItem("beba_completed_days", JSON.stringify(defaultDays));
-      setCompletedGuided([]);
-      setCompletedRogue([]);
-      localStorage.removeItem("beba_completed_guided_labs");
-      localStorage.removeItem("beba_completed_rogue_labs");
     }
   };
 
   const totalCompleted = completedDays.length;
   const percentage = ((totalCompleted / 72) * 100).toFixed(1);
-  const totalFlags = completedGuided.length + completedRogue.length;
 
   return (
     <main className="min-h-screen bg-[#070B13] text-[#F3F4F6] font-sans">
@@ -282,13 +244,6 @@ export default function Dashboard() {
                 <span className="text-sm font-bold text-white flex items-center gap-1.5 mt-0.5">
                   <Award className="w-4 h-4 text-indigo-400" />
                   <span>Quantum Practitioner</span>
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[11px] text-slate-400 uppercase tracking-wide block font-semibold">Active Lab Merits</span>
-                <span className="text-xs font-mono font-bold text-emerald-400 block mt-1 bg-emerald-500/5 border border-emerald-500/10 p-2.5 rounded-lg">
-                  🏆 {totalFlags * 150} PTS ({totalFlags} Flags Captured)
                 </span>
               </div>
 
@@ -351,54 +306,12 @@ export default function Dashboard() {
               Welcome to your professional cybersecurity academy. Explore, audit, and secure advanced systems. Deploy lattice-based post-quantum cryptography, run deepfake forensics, and compromise LLMs in a 100% virtualized Docker laboratory.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/labs">
-                <button className="btn-primary flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/10">
-                  <Crosshair className="w-4.5 h-4.5" />
-                  <span>🔬 Open Virtual Range & Hands-On Labs</span>
+              <Link href="/lessons/10">
+                <button className="btn-primary flex items-center gap-2">
+                  <Terminal className="w-4.5 h-4.5" />
+                  <span>Resume Next Lab: Day 10</span>
                 </button>
               </Link>
-              <Link href="/interview">
-                <button className="btn-primary flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/10">
-                  <Briefcase className="w-4.5 h-4.5" />
-                  <span>💼 Career Technical Interview Prep simulator</span>
-                </button>
-              </Link>
-            </div>
-          </div>
-
-          {/* 💼 Career & Job Market Readiness Hub Section */}
-          <div className="saas-card p-6 rounded-xl space-y-6">
-            <div className="flex items-center gap-2.5 border-b border-slate-800 pb-3">
-              <Briefcase className="w-5 h-5 text-indigo-400" />
-              <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                  💼 Cybersecurity Career & Job Market Readiness Hub
-                </h3>
-                <p className="text-[10px] text-slate-400 font-semibold uppercase mt-0.5">How your portfolio maps to elite jobs on the field</p>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed font-medium">
-              Employers in the cybersecurity sector do not hire based on simple certificates; they hire based on <strong className="text-white">proven, demonstrable execution portfolio assets</strong>. Here is where the skills you are mastering in this roadmap map to high-paying job opportunities:
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {CAREER_PROFILES.map((profile, i) => (
-                <div key={i} className="bg-[#050811] border border-slate-900/60 p-5 rounded-lg space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-[10px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold py-1 px-2.5 rounded">
-                      {profile.timeline}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-bold text-white tracking-tight">{profile.role}</h4>
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold block">{profile.salary}</span>
-                  <p className="text-[11px] text-slate-400 leading-relaxed font-medium">{profile.description}</p>
-                  <div className="pt-2 border-t border-slate-900/50">
-                    <strong className="text-[9px] uppercase tracking-wider text-slate-500 block font-bold">Key Portfolio Assets:</strong>
-                    <span className="text-[10px] text-slate-300 font-medium block mt-0.5 line-clamp-1">{profile.skills}</span>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
