@@ -6,13 +6,13 @@ topic: "HTTP/S, SSH, Wireshark"
 difficulty: "Beginner"
 ---
 
-# Day 4: Networking Fundamentals II - HTTPS, SSH Tunnels & Packet Capture
+# Day 4: Networking Fundamentals II - HTTPS, SSH & Packet Capture
 
-Yesterday, we discussed the underlying transport layers of the internet. Today, we step up to Layer 7 (Application) and learn how to sniff, analyze, and intercept active network traffic on the wire, as well as bypass network firewalls using secure tunnels.
+Yesterday, we discussed the underlying transport layers of the internet. Today, we step up to Layer 7 (Application) and learn how to sniff, analyze, and intercept active network traffic on the wire.
 
 ---
 
-## 1. Deep Dive: HTTP, HTTPS, and TLS Encapsulation
+## 1. Deep Dive: HTTP, HTTPS, and TLS Encapuslation
 
 When you visit a website, your browser sends **HTTP requests** (using commands like `GET`, `POST`, `PUT`, `DELETE`).
 
@@ -32,7 +32,7 @@ When you visit a website, your browser sends **HTTP requests** (using commands l
 +------------------------------+
 ```
 
-### The TLS Handshake
+### The TLS Handshake (Simplified)
 To establish a secure connection, your browser and the webserver negotiate encryption keys:
 1. **Client Hello:** Browser sends supported TLS versions and encryption algorithms (Cipher Suites).
 2. **Server Hello:** Server selects the Cipher Suite and responds with its **SSL/TLS Certificate** containing its Public Key.
@@ -41,63 +41,28 @@ To establish a secure connection, your browser and the webserver negotiate encry
 
 ---
 
-## 2. SSH Tunnels & Port Forwarding
+## 2. SSH: Cryptographically Secure Shell
 
-**SSH (Secure Shell)** on Port `22` provides remote terminal access encrypted by asymmetric keys. However, it can also be used to bypass restrictive firewalls by routing traffic through secure encrypted pipes:
+**SSH (Secure Shell)** on Port `22` replaced unencrypted protocols like Telnet and rlogin. It provides remote terminal access encrypted by asymmetric keys.
 
-- **Local Port Forwarding (`-L`):** Forwards a local host port to a remote server port (e.g., forwarding local 8080 to an internal database port 3306 on a remote server).
-- **Remote Port Forwarding (`-R`):** Forwards a remote server port back to your local port, exposing a local service to the internet.
-- **Dynamic Port Forwarding (`-D`):** Converts your SSH client into a secure SOCKS5 proxy server. Any browser or tool pointed at this SOCKS proxy routes its traffic directly through the encrypted SSH server.
-
-```bash
-# Set up a secure Dynamic SOCKS5 Proxy on port 9050
-ssh -D 9050 -N -f user@remote-jump-box
-```
+### Authentication Methods:
+- **Password Authentication:** Susceptible to brute-force and dictionary attacks.
+- **Key-Based Authentication (Best Practice):** Uses a cryptographic keypair. You upload your public key (`~/.ssh/id_rsa.pub`) to the target server's `authorized_keys` file. When you connect, the server challenges you to sign a message using your private key (`~/.ssh/id_rsa`), validating your identity without sending credentials over the network.
 
 ---
 
-## 3. Wireshark & Tshark BPF Packet Capture
+## 3. Wireshark: Sniffing Packets on the Wire
 
-**Wireshark** is a GUI-based open-source packet analyzer. For terminal-based headless scripting, we use its CLI counterpart: **`tshark`**.
+**Wireshark** is a GUI-based open-source packet analyzer. In containerized labs, we use it to inspect bridge traffic.
+For terminal-based headless scripting, we use its CLI counterpart: **`tshark`**.
 
-To capture specific packets efficiently, we use **Berkeley Packet Filters (BPF)**:
-- Filter for specific IP: `host 192.168.1.1`
-- Filter for protocol and port: `tcp port 443`
-- Filter excluding a protocol: `not arp`
-
----
-
-## 4. Field Portfolio Project: SOCKS5 Proxy Pivot & Traffic Analysis
-
-Let's simulate a network engineering and analysis scenario:
-1. Set up a secure SOCKS5 pivot tunnel on your workstation.
-2. Intercept and capture local loopback packet exchanges using `tshark` with advanced BPF display filters.
-
-### Step 1: Establish SOCKS5 Dynamic Proxy
-Let's spin up a local SSH-based proxy server. If you don't have a remote host, you can proxy through your local host loopback:
-```bash
-ssh -D 1080 -N -f localhost
-```
-*(Verify your SOCKS5 proxy is listening on port 1080 using `ss -tuln | grep 1080`)*
-
-### Step 2: Capture SOCKS/SSH Protocol Traffic
-Open another terminal pane and run `tshark` in capture mode, restricting it only to local TCP loopback traffic on port 1080:
-```bash
-# Capture 10 packets and print basic summary fields
-sudo tshark -i lo -c 10 -f "tcp port 1080"
-```
-
-### Step 3: Parse and View Specific Fields
-Use display filters to extract specific payload headers (such as raw destination IP and TCP sequence counts):
-```bash
-sudo tshark -i lo -c 5 -f "tcp port 1080" -T fields -e frame.number -e ip.dst -e tcp.len
-```
-
-This portfolio exercise teaches you how to construct, route, and audit secure cryptographic tunnels on modern enterprise networks!
+### Capture Filters vs. Display Filters:
+- **Capture Filters (BPF Syntax):** Restricts what gets written to the disk (e.g., `tcp port 80`).
+- **Display Filters:** Filters the captured packets currently shown on the screen (e.g., `ip.src == 192.168.1.100 && http.request.method == "POST"`).
 
 ---
 
-## 5. Hands-On Lab: Capturing Local Bridge Packets
+## 4. Hands-On Lab: Capturing Local Bridge Packets
 
 Let's verify how networks communicate. We will run a quick packet sniff on your terminal using `tshark`:
 

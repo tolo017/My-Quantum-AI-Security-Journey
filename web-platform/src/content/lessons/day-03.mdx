@@ -6,17 +6,17 @@ topic: "OSI Model, TCP/IP, DNS"
 difficulty: "Beginner"
 ---
 
-# Day 3: Networking Fundamentals I - TCP/IP Handshakes & DNS Zone Transfers
+# Day 3: Networking Fundamentals I - Protocols & Layering
 
-To defend or audit a digital environment, you must understand how data traverses the wire. If you cannot analyze standard network communication, you cannot identify malicious or anomalous data streams.
+To defend or audit a digital environment, you must understand how data traverses the wire. If you cannot analyze standard network communication, you cannot identify malicious data streams.
 
-Today, we cover Layer 2, Layer 3, Layer 4, the 3-way TCP handshake, and how to execute a DNS Zone Transfer attack.
+Today, we cover Layer 2, Layer 3, Layer 4, and the Core DNS protocol.
 
 ---
 
-## 1. Deep Dive: The TCP/IP Model & Encapsulation
+## 1. Deep Dive: The TCP/IP vs. OSI Model
 
-The networking stack is abstracted into standard layers. Each layer wraps the upper layer's data with its own header (Encapsulation).
+The networking stack is abstracted into standard layers. Each layer wraps the upper layer's data with its own header (Encapuslation).
 
 ```
 +-----------------------------------+
@@ -47,7 +47,7 @@ The networking stack is abstracted into standard layers. Each layer wraps the up
 
 ---
 
-## 2. DNS: The Internet's Phone Book & Subdomain Enumeration
+## 2. DNS: The Internet's Phone Book
 
 The **Domain Name System (DNS)** translates human-readable domain names (e.g., `bebasecurity.com`) into computer-readable IP addresses (e.g., `104.244.42.1`).
 
@@ -69,63 +69,10 @@ The **Domain Name System (DNS)** translates human-readable domain names (e.g., `
 - **`AAAA`:** Maps a domain to an IPv6 address.
 - **`MX` (Mail Exchanger):** Directs email traffic to designated mail servers.
 - **`TXT`:** Stores plain text notes (used for SPF/DKIM verification and proof of domain ownership).
-- **`AXFR`:** Used for **DNS Zone Transfers** to replicate database records between primary and secondary DNS servers. If misconfigured, an attacker can download the entire DNS table, exposing all internal IP addresses and servers!
 
 ---
 
-## 3. Field Portfolio Project: Active DNS Zone Transfer script (Python)
-
-Let's write a real subdomain harvester script in Python using raw socket queries and the `dns` library. This is a primary OSINT and active reconnaissance script for mapping a target's internal landscape.
-
-### Step 1: Install Python DNS Library
-```bash
-pip3 install dnspython
-```
-
-### Step 2: Create Your Python Recon Tool
-Create a file named `dns_recon.py`:
-```python
-import dns.resolver
-import dns.zone
-import sys
-
-def dns_recon(domain):
-    print(f"[*] Starting DNS harvesting for: {domain}")
-
-    # 1. Resolve Nameservers
-    try:
-        ns_answers = dns.resolver.resolve(domain, 'NS')
-        servers = [str(rdata) for rdata in ns_answers]
-        print(f"[+] Found Name Servers: {servers}")
-    except Exception as e:
-        print(f"[-] Could not resolve NS records: {e}")
-        return
-
-    # 2. Attempt AXFR Zone Transfer on each nameserver
-    for server in servers:
-        print(f"[*] Attempting Zone Transfer (AXFR) on: {server}")
-        try:
-            zone = dns.zone.from_xfr(dns.query.xfr(server, domain))
-            print(f"[!] SUCCESS! Zone Transfer vulnerability detected!")
-            for name, node in zone.nodes.items():
-                print(f"    - {name}.{domain} -> {node.to_text(name)}")
-        except Exception:
-            print(f"[-] Zone transfer failed on {server} (Securely Configured)")
-
-if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else "zonetransfer.me"
-    dns_recon(target)
-```
-
-### Step 3: Test Your Recon Tool
-Run the script against a safe, authorized testing server (`zonetransfer.me`):
-```bash
-python3 dns_recon.py zonetransfer.me
-```
-
----
-
-## 4. Hands-On Lab: Querying DNS via Command Line
+## 3. Hands-On Lab: Querying DNS via Command Line
 
 Open your terminal and run DNS queries using the **`dig` (Domain Information Groper)** command-line tool:
 

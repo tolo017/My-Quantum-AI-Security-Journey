@@ -6,15 +6,15 @@ topic: "Recon, Scan, Exploit, Post"
 difficulty: "Beginner"
 ---
 
-# Day 8: The Hacker's Methodology - Tactical Reconnaissance & Port Scanning
+# Day 8: The Hacker's Methodology - Cyber Attack Lifecycle
 
-To build quantum-safe or AI-driven defenses, you must first think like an attacker. Hacking is not random; it is a highly structured, systematic process mapped across standard operational frameworks.
+To build quantum-safe or AI-driven defenses, you must first think like an attacker. Hacking is not random; it is a highly structured, systematic process.
 
-Today, we dive into the industry-standard phases of a cyber attack, mapping the journey from passive Open-Source Intelligence (OSINT) to active port scanning and evasion.
+Today, we dive into the industry-standard phases of a cyber attack, mapping the journey from initial reconnaissance to objective execution.
 
 ---
 
-## 1. The 5 Phases of the Hacking Cycle & MITRE ATT&CK Mapping
+## 1. The 5 Phases of the Hacking Cycle
 
 ```
 +-----------------------------------------------------------------+
@@ -28,7 +28,7 @@ Today, we dive into the industry-standard phases of a cyber attack, mapping the 
 
 ### Phase 1: Reconnaissance (Information Gathering)
 The most critical stage. Up to 70% of an engagement's time is spent gathering data about the target.
-- **Passive Recon (OSINT):** Gathering data without directly interacting with the target system (e.g., querying public Shodan records, WHOIS databases, searching open GitHub repositories for leaked credentials).
+- **Passive Recon:** Gathering data without directly interacting with the target system (e.g., querying public Shodan records, WHOIS databases, searching open GitHub repositories for leaked credentials).
 - **Active Recon:** Interacting directly with target systems (e.g., DNS zone transfers, port probing). Active recon carries a risk of triggering firewall alerts.
 
 ### Phase 2: Scanning & Enumeration
@@ -39,7 +39,10 @@ Identifying open ports, active services, operating system versions, and known vu
   - **TCP Connect Scan (`-sT`):** Completes the full 3-way handshake. Loud but highly accurate.
 
 ### Phase 3: Gaining Access (Exploitation)
-Using the vulnerabilities discovered during the scanning phase to compromise the target. This could involve injecting payloads into web forms (e.g., SQLi, Command Injection) or executing memory corruptions.
+Using the vulnerabilities discovered during the scanning phase to compromise the target. This could involve:
+- Injecting payloads into web forms (e.g., SQLi, Command Injection).
+- Executing buffer overflows to take control of system memory.
+- Using social engineering to trick a user into executing malware.
 
 ### Phase 4: Maintaining Access (Persistence)
 Setting up a reliable way to reconnect to the compromised target, even if the system is rebooted or patched.
@@ -50,69 +53,7 @@ Deleting log files, flushing shell history files, and clearing system registries
 
 ---
 
-## 2. Advanced Evasion Tactics in Scanning
-
-Firewalls and Intrusion Detection Systems (IDS) detect rapid, aggressive scans. To bypass detection, professional red teamers configure evasion parameters:
-- **Packet Fragmentation (`-f`):** Splitting the TCP header across several packets to confuse packet inspectors.
-- **Decoys (`-D`):** Sending scans mixed with multiple spoofed decoy IP addresses, making it mathematically impossible for blue teams to distinguish the true source IP.
-- **Timing Templates (`-T0` to `-T5`):** Adjusting scan rates. `-T0` (Paranoid) serializes packet requests with hours of delay between each probe to defeat statistical threat engines.
-
----
-
-## 3. Field Portfolio Project: Python Multi-Threaded Port Scanner
-
-Let's build a custom multi-threaded socket-level port scanner from scratch using Python. Writing your own scanner is a classic security engineering project that demonstrates deep knowledge of TCP handshakes and low-level socket APIs.
-
-### Step 1: Create Your Custom Scanner Script
-Create a file named `fast_scanner.py`:
-```python
-import socket
-import sys
-from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
-
-def scan_port(host, port):
-    try:
-        # Create a TCP Socket stream with 1 second connection timeout
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(1.0)
-
-        # Attempt to connect to host and port
-        result = s.connect_ex((host, port))
-        if result == 0:
-            print(f"[+] Port {port} is OPEN!")
-        s.close()
-    except Exception:
-        pass
-
-def main():
-    target_host = sys.argv[1] if len(sys.argv) > 1 else "127.0.0.1"
-    print("-" * 50)
-    print(f"[*] Scanning target host: {target_host}")
-    print(f"[*] Scan started at: {str(datetime.now())}")
-    print("-" * 50)
-
-    # Use ThreadPoolExecutor to run scans concurrently
-    ports_to_scan = range(1, 1024)
-    with ThreadPoolExecutor(max_workers=100) as executor:
-        for port in ports_to_scan:
-            executor.submit(scan_port, target_host, port)
-
-if __name__ == "__main__":
-    main()
-```
-
-### Step 2: Test Your Scanner
-Run your lightning-fast custom scanner against your local loopback:
-```bash
-python3 fast_scanner.py 127.0.0.1
-```
-
-This multithreaded script is a stellar code addition to your cybersecurity engineering portfolio!
-
----
-
-## 4. Hands-On Lab: Network Probing with Nmap
+## 2. Hands-On Lab: Network Probing with Nmap
 
 Let's simulate Phase 2 (Scanning) on your local network space. We will use the secure port scanner **`nmap`**:
 

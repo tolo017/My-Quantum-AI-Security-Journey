@@ -10,7 +10,7 @@ difficulty: "Beginner"
 
 Cryptography ensures confidentiality, but it does not guarantee **integrity** (ensuring data has not been modified) or **authenticity** (proving who sent the data). To solve these two problems, we use cryptographic hashes and Public Key Infrastructure (PKI).
 
-Today, we dive into hash functions, digital signatures, trust frameworks, and how to configure a custom Root Certificate Authority (CA) using OpenSSL.
+Today, we dive into hash functions, digital signatures, and trust frameworks.
 
 ---
 
@@ -48,7 +48,7 @@ They operate on an inverted asymmetric keypair logic:
 
 ## 3. Public Key Infrastructure (PKI)
 
-How can you trust that a public key actually belongs to the person or website claiming to own it? If an attacker intercepts your connection and gives you their public key, they can decrypt your traffic (Man-In-The-Middle attack).
+How can you trust that a public key actually belongs to the person or website claiming to own it? If a hacker intercepts your connection and gives you their public key, they can decrypt your traffic (Man-In-The-Middle attack).
 
 To solve this, we use **PKI (Public Key Infrastructure)**:
 - **Certificate Authority (CA):** Trusted third-party organizations (e.g., Let's Encrypt, DigiCert) that verify the ownership of domain names and issue **Digital Certificates** (X.509 format).
@@ -57,47 +57,7 @@ To solve this, we use **PKI (Public Key Infrastructure)**:
 
 ---
 
-## 4. Field Portfolio Project: Custom OpenSSL Root CA & Wildcard Signer
-
-In high-security enterprise environments, security engineers configure private PKIs to secure internal server-to-server and API communications. We will build a complete Root CA using OpenSSL and sign a custom web service certificate.
-
-### Step 1: Create Your PKI Workspace Directory
-```bash
-mkdir -p ~/beba_pki/root_ca
-cd ~/beba_pki/root_ca
-```
-
-### Step 2: Generate the Root CA Private Key & Self-Signed Certificate
-We will generate a secure, password-protected 4096-bit RSA Private Key for our Root CA, followed by a Root Certificate valid for 10 years:
-```bash
-# Generate Root CA Private Key
-openssl genrsa -aes256 -out rootCA.key 4096
-
-# Generate Root Certificate
-openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 3650 -out rootCA.pem \
-  -subj "/C=US/ST=State/L=City/O=BebaCyberLabs/CN=BebaRootCA"
-```
-
-### Step 3: Sign a Custom Server Certificate
-Now, let's generate a private key and a Certificate Signing Request (CSR) for a mock internal application server `intranet.bebalabs.local`:
-```bash
-# Generate Server Key
-openssl genrsa -out server.key 2048
-
-# Generate Server CSR
-openssl req -new -key server.key -out server.csr \
-  -subj "/C=US/ST=State/L=City/O=BebaCyberLabs/CN=intranet.bebalabs.local"
-
-# Sign the Server CSR using our custom Root CA Certificate
-openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
-  -out server.crt -days 365 -sha256
-```
-
-This completes the generation of your secure private PKI suite! You can present these certificate configurations in cloud infrastructure design portfolios.
-
----
-
-## 5. Hands-On Lab: Calculating Hash Integrity on Zorin OS
+## 4. Hands-On Lab: Calculating Hash Integrity on Zorin OS
 
 Let's calculate the hash of a file to verify its integrity:
 
